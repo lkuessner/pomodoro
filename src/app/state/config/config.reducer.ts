@@ -10,9 +10,7 @@ export const initialState: Config = {
 
 export const configReducer = createReducer(
   initialState,
-  on(ConfigActions.getConfigState, (_state, action) => {
-    console.log('_state', _state);
-
+  on(ConfigActions.getConfigState, (_state) => {
     return _state;
   }),
   on(
