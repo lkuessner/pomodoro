@@ -1,40 +1,29 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
-
-interface GlobalConfig {
-  globalTaskDuration$: BehaviorSubject<number>;
-  globalBreakDuration$: BehaviorSubject<number>;
-  setTaskDuration: (durationValue: number) => void;
-  getTaskDuration: () => GlobalConfig['globalTaskDuration$'];
-  setBreakDuration: (durationValue: number) => void;
-  getBreakDuration: () => GlobalConfig['globalBreakDuration$'];
-}
+import { Injectable, OnInit } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { ConfigServiceStateType } from '../../interfaces/config';
+import { ConfigActions } from '../../state/config/config.actions';
 
 @Injectable({
   providedIn: 'root',
 })
-export class GlobalConfigService implements GlobalConfig {
-  globalTaskDuration$: BehaviorSubject<number>;
-  globalBreakDuration$: BehaviorSubject<number>;
+export class GlobalConfigService implements OnInit {
+  config$: ConfigServiceStateType | undefined = undefined;
 
-  constructor() {
-    this.globalTaskDuration$ = new BehaviorSubject<number>(25);
-    this.globalBreakDuration$ = new BehaviorSubject<number>(5);
+  constructor(private store: Store) {}
+
+  ngOnInit(): void {
+    this.store.dispatch(ConfigActions.getConfigState());
   }
 
   setTaskDuration = (durationValue: number) => {
     console.log(durationValue);
   };
 
-  getTaskDuration = () => {
-    return this.globalTaskDuration$;
-  };
+  getTaskDuration = () => {};
 
   setBreakDuration = (durationValue: number) => {
     console.log(durationValue);
   };
 
-  getBreakDuration = () => {
-    return this.globalBreakDuration$;
-  };
+  getBreakDuration = () => {};
 }
