@@ -12,10 +12,8 @@ import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root',
 })
-export class ConfigService implements OnInit {
+export class ConfigService {
   constructor(private store: Store) {}
-
-  ngOnInit(): void {}
 
   setTaskDuration = (durationValue: number) => {
     this.store.dispatch(
@@ -37,7 +35,7 @@ export class ConfigService implements OnInit {
     return this.store.select(selectConfigBreakDuration);
   }
 
-  getConfig(): Observable<Config> {
+  getConfigState(): ConfigServiceStateType {
     return this.store.select(selectConfigState);
   }
 }

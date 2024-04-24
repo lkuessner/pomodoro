@@ -1,11 +1,11 @@
-import { BehaviorSubject } from 'rxjs';
+import { Observable } from 'rxjs';
 
 export interface Config {
   taskDuration: number;
   breakDuration: number;
 }
 
-export type ConfigServiceStateType = BehaviorSubject<Config>;
+export type ConfigServiceStateType = Observable<Config>;
 
 export interface ConfigMethods {
   setTaskDuration: (durationValue: number) => void;
