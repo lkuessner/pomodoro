@@ -1,0 +1,15 @@
+:host {
+    display: flex;
+    flex-direction: column;
+
+    .config, .log {
+        display: flex;
+        flex-direction: column;
+
+        .buttons {
+            input {
+                width: 100%;
+            }
+        }
+    }
+}
