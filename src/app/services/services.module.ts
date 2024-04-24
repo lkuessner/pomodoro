@@ -1,10 +1,12 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { GlobalConfigService } from './GlobalConfigService/global-config.service';
+import { ConfigService } from './ConfigService/config.service';
+import { LogService } from './LogService/log.service';
+import { TimerService } from './TimerService/timer.service';
 
 @NgModule({
   declarations: [],
   imports: [CommonModule],
-  providers: [GlobalConfigService],
+  providers: [ConfigService, LogService, TimerService],
 })
 export class ServicesModule {}
