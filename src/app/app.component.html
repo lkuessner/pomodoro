@@ -1,8 +1,44 @@
-<main>
+<div class="config">
+  <h1>Config Service</h1>
   <button (click)="getConfig()">getConfig()</button>
+  <button (click)="setTaskDuration()">setTaskDuration()</button>
   <button (click)="getTaskDuration()">getTaskDuration()</button>
-  <button (click)="getBreakDuration()">getBreakDuration()</button>
   <button (click)="setBreakDuration()">setBreakDuration()</button>
-  <button (click)="displayInputValue()">displayInputValue()</button>
-  <input (change)="handleInputChange($event)" [value]="inputValue" type="number">
-</main>
+  <button (click)="getBreakDuration()">getBreakDuration()</button>
+  <div class="config-buttons">
+    <span>TaskDuration</span>
+    <input (change)="handleTaskDurationChange($event)" [value]="taskInputValue" type="number">
+    BreakDuration
+    <input (change)="handleBreakDurationChange($event)" [value]="breakInputValue" type="number">
+  </div>
+</div>
+<div class="log">
+  <h1>Log Service</h1>
+  <div class="buttons">
+    <button (click)="getLogState()">getLogState()</button>
+    <button (click)="resetLogState()">resetLogState()</button>
+    <button (click)="getLogState()">getLogState()</button>
+    <input (change)="handleLogIdInputChange($event)" [value]="logId" type="text">
+    <button (click)="removeLogById()">removeLogById()</button>
+  </div>
+
+  <div>
+    <h1>Logs</h1>
+    {{ getLogState() | async | json }}
+  </div>
+</div>
+
+<div class="timer">
+  <h1>Timer Service</h1>
+  <div class="buttons">
+    <button (click)="addTimer()">addTimer()</button>
+    <button (click)="toggleTimerIsActive()">toggleTimerIsActive()</button>
+    <button (click)="toggleTimerIsExpired()">toggleTimerIsExpired()</button>
+    <button (click)="addTask()">addTask()</button>
+    <button (click)="removeTask()">removeTask()</button>
+    <button (click)="setTaskTitle()">setTaskTitle()</button>
+    <button (click)="setTaskDone()">setTaskDone()</button>
+  </div>
+  <h1>Timers</h1>
+  <div>{{ timers$ | async | json }}</div>
+</div>
