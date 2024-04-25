@@ -1,128 +1,148 @@
-import { Component, OnInit } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-import { ConfigService } from './services/ConfigService/config.service';
-import { LogService } from './services/LogService/log.service';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import {
+  NavigationEnd,
+  Router,
+  RouterLink,
+  RouterLinkActive,
+  RouterOutlet,
+} from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { TimerService } from './services/TimerService/timer.service';
-import { Observable } from 'rxjs';
+import { Observable, Subscription, filter } from 'rxjs';
 import { Timer } from './interfaces/timer';
+import { TabNavigationComponent } from './components/tab-navigation/tab-navigation.component';
+import { ConfigService } from './services';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, CommonModule],
+  imports: [
+    CommonModule,
+    RouterOutlet,
+    RouterLink,
+    RouterLinkActive,
+    TabNavigationComponent,
+  ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnDestroy {
   title = 'pomodoro';
-  taskInputValue: number | undefined;
-  breakInputValue: number | undefined;
+
   logId: string = '';
   timers$: Observable<Array<Timer>> | undefined;
   firstTimerId: string = '';
   firstTaskId: string = '';
-  constructor(
-    private configService: ConfigService,
-    private logService: LogService,
-    private timerService: TimerService
-  ) {}
+  lastRouteIsActive: boolean = false;
+  private routerEventsSubscription: Subscription | undefined;
+
+  constructor(private router: Router, private configService: ConfigService) {}
 
   ngOnInit(): void {
-    this.configService.getConfigState().subscribe((state) => {
-      this.taskInputValue = state.taskDuration;
-      this.breakInputValue = state.breakDuration;
+    this.routerEventsSubscription = this.router.events
+      .pipe(filter((event) => event instanceof NavigationEnd))
+      .subscribe(() => {
+        let lastRouteIndex =
+          this.router.config.filter((route) => route.path !== '**').length - 1;
+
+        this.lastRouteIsActive = this.router.isActive(
+          this.router.config[lastRouteIndex].path!,
+          true
+        );
+      });
+    this.configService.getConfigState().subscribe((configState) => {
+      console.log('check ConfigState', configState);
     });
-    this.timers$ = this.timerService.getAllTimers();
-    this.timers$.subscribe((timer) => {
-      this.firstTimerId = timer[0].id;
-      this.firstTaskId = timer[0]?.tasks[0]?.id;
-    });
   }
 
-  /** TimerService Methods */
-  addTimer() {
-    return this.timerService.addTimer();
+  ngOnDestroy(): void {
+    if (this.routerEventsSubscription) {
+      this.routerEventsSubscription.unsubscribe();
+    }
   }
 
-  toggleTimerIsActive() {
-    return this.timerService.toggleTimerIsActive(this.firstTimerId);
-  }
+  // /** TimerService Methods */
+  // addTimer() {
+  //   return this.timerService.addTimer();
+  // }
 
-  toggleTimerIsExpired() {
-    return this.timerService.toggleTimerIsExpired(this.firstTimerId);
-  }
+  // toggleTimerIsActive() {
+  //   return this.timerService.toggleTimerIsActive(this.firstTimerId);
+  // }
 
-  addTask() {
-    return this.timerService.addTask(this.firstTimerId, 'Beispiel Task Titel');
-  }
+  // toggleTimerIsExpired() {
+  //   return this.timerService.toggleTimerIsExpired(this.firstTimerId);
+  // }
 
-  removeTask() {
-    return this.timerService.removeTask(this.firstTimerId, this.firstTaskId);
-  }
+  // addTask() {
+  //   return this.timerService.addTask(this.firstTimerId, 'Beispiel Task Titel');
+  // }
 
-  setTaskTitle() {
-    return this.timerService.setTaskTitle(
-      this.firstTimerId,
-      this.firstTaskId,
-      'Changed Task title'
-    );
-  }
+  // removeTask() {
+  //   return this.timerService.removeTask(this.firstTimerId, this.firstTaskId);
+  // }
 
-  setTaskDone() {
-    return this.timerService.toggleTaskIsDone(
-      this.firstTimerId,
-      this.firstTaskId
-    );
-  }
+  // setTaskTitle() {
+  //   return this.timerService.setTaskTitle(
+  //     this.firstTimerId,
+  //     this.firstTaskId,
+  //     'Changed Task title'
+  //   );
+  // }
 
-  /** LogService Methods */
-  getLogState() {
-    return this.logService.getLogState();
-  }
+  // setTaskDone() {
+  //   return this.timerService.toggleTaskIsDone(
+  //     this.firstTimerId,
+  //     this.firstTaskId
+  //   );
+  // }
 
-  resetLogState() {
-    this.logService.resetLogState();
-  }
-  removeLogById() {
-    this.logService.removeLogById(this.logId);
-  }
+  // /** LogService Methods */
+  // getLogState() {
+  //   return this.logService.getLogState();
+  // }
 
-  /** ConfigService Methods */
-  getConfig() {
-    return this.configService.getConfigState();
-  }
+  // resetLogState() {
+  //   this.logService.resetLogState();
+  // }
+  // removeLogById() {
+  //   this.logService.removeLogById(this.logId);
+  // }
 
-  getTaskDuration() {
-    return this.configService.getTaskDuration();
-  }
+  // /** ConfigService Methods */
+  // getConfig() {
+  //   return this.configService.getConfigState();
+  // }
 
-  getBreakDuration() {
-    return this.configService.getBreakDuration();
-  }
+  // getTaskDuration() {
+  //   return this.configService.getTaskDuration();
+  // }
 
-  setTaskDuration() {
-    if (this.taskInputValue)
-      this.configService.setTaskDuration(this.taskInputValue);
-  }
+  // getBreakDuration() {
+  //   return this.configService.getBreakDuration();
+  // }
 
-  setBreakDuration() {
-    if (this.breakInputValue)
-      this.configService.setBreakDuration(this.breakInputValue);
-  }
+  // setTaskDuration() {
+  //   if (this.taskInputValue)
+  //     this.configService.setTaskDuration(this.taskInputValue);
+  // }
 
-  handleTaskDurationChange(event: Event) {
-    const newValue = Number((event.target as HTMLInputElement).value);
-    this.taskInputValue = newValue;
-  }
+  // setBreakDuration() {
+  //   if (this.breakInputValue)
+  //     this.configService.setBreakDuration(this.breakInputValue);
+  // }
 
-  handleBreakDurationChange(event: Event) {
-    const newValue = Number((event.target as HTMLInputElement).value);
-    this.breakInputValue = newValue;
-  }
+  // handleTaskDurationChange(event: Event) {
+  //   const newValue = Number((event.target as HTMLInputElement).value);
+  //   this.taskInputValue = newValue;
+  // }
 
-  handleLogIdInputChange(event: Event) {
-    const inputValue = (event.target as HTMLInputElement).value;
-    this.logId = inputValue;
-  }
+  // handleBreakDurationChange(event: Event) {
+  //   const newValue = Number((event.target as HTMLInputElement).value);
+  //   this.breakInputValue = newValue;
+  // }
+
+  // handleLogIdInputChange(event: Event) {
+  //   const inputValue = (event.target as HTMLInputElement).value;
+  //   this.logId = inputValue;
+  // }
 }

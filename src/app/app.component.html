@@ -1,4 +1,14 @@
-<div class="config">
+<app-tab-navigation></app-tab-navigation>
+<div
+  class="views-container"
+  [ngClass]="{ isLastRouteBorder: lastRouteIsActive }"
+>
+  <div class="content-padding">
+    <router-outlet></router-outlet>
+  </div>
+</div>
+
+<!-- <div class="config">
   <h1>Config Service</h1>
   <button (click)="getConfig()">getConfig()</button>
   <button (click)="setTaskDuration()">setTaskDuration()</button>
@@ -41,4 +51,4 @@
   </div>
   <h1>Timers</h1>
   <div>{{ timers$ | async | json }}</div>
-</div>
+</div> -->

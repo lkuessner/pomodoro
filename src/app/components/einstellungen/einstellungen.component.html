@@ -1,0 +1,50 @@
+<form class="settings-form" [formGroup]="formGroup" (ngSubmit)="onSubmit()">
+  <mat-form-field class="input-full-width">
+    <mat-label>Dauer der Aufgaben (Minuten)</mat-label>
+    <input
+      type="number"
+      matInput
+      formControlName="taskDuration"
+      value="taskDuration"
+      [errorStateMatcher]="matcher"
+      placeholder="25"
+    />
+    @if (formGroup && !formGroup.controls['taskDuration'].hasError('required'))
+    {
+    <mat-error>Bitte gib eine Aufgabendauer an.</mat-error>
+    } @if (formGroup.controls['taskDuration'].hasError('required')) {
+    <mat-error
+      >Angabe einer Aufgabendauer ist <strong>notwendig</strong>.</mat-error
+    >
+    }
+  </mat-form-field>
+
+  <mat-form-field class="input-full-width">
+    <mat-label>Dauer der Pausen zwischen Aufgaben (Minuten)</mat-label>
+    <input
+      type="number"
+      matInput
+      formControlName="breakDuration"
+      value="breakDuration"
+      [errorStateMatcher]="matcher"
+      placeholder="25"
+    />
+    @if (formGroup && !formGroup.controls['breakDuration'].hasError('required'))
+    {
+    <mat-error>Bitte gib eine Pausendauer an.</mat-error>
+    } @if (formGroup.controls['breakDuration'].hasError('required')) {
+    <mat-error
+      >Angabe einer Pausendauer ist <strong>notwendig</strong>.</mat-error
+    >
+    }
+  </mat-form-field>
+
+  <button
+    mat-button
+    color="primary"
+    type="submit"
+    [disabled]="!formGroup.valid"
+  >
+    Speichern
+  </button>
+</form>
