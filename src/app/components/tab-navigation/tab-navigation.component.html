@@ -1,0 +1,20 @@
+<div class="container">
+  <span class="app-name">Pomodoro</span>
+  <nav>
+    <ul>
+      @for (item of navigationItems; track item) {
+      <li>
+        <a
+          #rla="routerLinkActive"
+          routerLinkActive
+          [routerLinkActiveOptions]="{ exact: true }"
+          [ngClass]="{ activeAnchor: rla.isActive }"
+          routerLink="{{ item.path }}"
+          ariaCurrentWhenActive="page"
+          >{{ item.title }}</a
+        >
+      </li>
+      }
+    </ul>
+  </nav>
+</div>

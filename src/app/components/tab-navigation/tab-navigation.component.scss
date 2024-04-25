@@ -1,0 +1,71 @@
+@use "../../../assets/styles/colors" as colors;
+@use "../../../assets/styles/sizes" as sizes;
+
+:host {
+  display: flex;
+  justify-content: center;
+  padding-top: 1rem;
+  width: 100%;
+  max-width: sizes.$MAX_WIDTH;
+  margin: 0 auto;
+
+  .container {
+    display: flex;
+    // flex: 0 1 80%;
+    width: 100%;
+    align-items: center;
+
+    .app-name,
+    nav {
+      align-items: center;
+      font-family: "Montserrat";
+    }
+
+    .app-name {
+      display: flex;
+      flex: 0 1 50%;
+      font-weight: 500;
+      font-size: 1.25rem;
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-evenly;
+      flex: 0 1 50%;
+
+      ul {
+        display: flex;
+        flex: 1 100%;
+        align-items: center;
+        justify-content: flex-end;
+        padding: 0;
+        margin: 0;
+
+        li {
+          display: flex;
+          height: 100%;
+          list-style: none;
+          font-size: 14px;
+
+          a {
+            display: flex;
+            align-items: center;
+            height: 2.25rem;
+            padding: 0.25rem 0.5rem;
+            color: colors.$COLOR_BLACK;
+            text-decoration: none;
+          }
+
+          .activeAnchor {
+            background-color: #00a1e4;
+            color: white;
+            border: 0px solid transparent;
+            border-bottom: none;
+            border-top-left-radius: sizes.$TAB_BORDER_RADIUS;
+            border-top-right-radius: sizes.$TAB_BORDER_RADIUS;
+          }
+        }
+      }
+    }
+  }
+}
