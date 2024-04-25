@@ -1,15 +1,37 @@
+@use "../assets/styles/sizes" as sizes;
+
 :host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  .views-container {
+    background-color: #00a1e4;
+    width: 100%;
+    max-width: sizes.$MAX_WIDTH;
+    margin: 0 auto;
+    border: 0px solid transparent;
+    border-bottom: none;
+    border-radius: sizes.$TAB_BORDER_RADIUS;
+
+    .content-padding {
+      padding: 1rem;
+    }
+  }
+
+  .isLastRouteBorder {
+    border-top-right-radius: 0;
+  }
+
+  .config,
+  .log {
     display: flex;
     flex-direction: column;
 
-    .config, .log {
-        display: flex;
-        flex-direction: column;
-
-        .buttons {
-            input {
-                width: 100%;
-            }
-        }
+    .buttons {
+      input {
+        width: 100%;
+      }
     }
+  }
 }

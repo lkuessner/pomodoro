@@ -1,20 +1,40 @@
-import { Component, OnInit } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import {
+  Component,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  SimpleChanges,
+} from '@angular/core';
+import {
+  ActivatedRoute,
+  NavigationEnd,
+  Router,
+  RouterLink,
+  RouterLinkActive,
+  RouterOutlet,
+} from '@angular/router';
 import { ConfigService } from './services/ConfigService/config.service';
 import { LogService } from './services/LogService/log.service';
 import { CommonModule } from '@angular/common';
 import { TimerService } from './services/TimerService/timer.service';
-import { Observable } from 'rxjs';
+import { Observable, Subscription, filter } from 'rxjs';
 import { Timer } from './interfaces/timer';
+import { TabNavigationComponent } from './components/tab-navigation/tab-navigation.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, CommonModule],
+  imports: [
+    CommonModule,
+    RouterOutlet,
+    RouterLink,
+    RouterLinkActive,
+    TabNavigationComponent,
+  ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnDestroy {
   title = 'pomodoro';
   taskInputValue: number | undefined;
   breakInputValue: number | undefined;
@@ -22,10 +42,14 @@ export class AppComponent implements OnInit {
   timers$: Observable<Array<Timer>> | undefined;
   firstTimerId: string = '';
   firstTaskId: string = '';
+  lastRouteIsActive: boolean = false;
+  private routerEventsSubscription: Subscription | undefined;
+
   constructor(
     private configService: ConfigService,
     private logService: LogService,
-    private timerService: TimerService
+    private timerService: TimerService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -38,6 +62,23 @@ export class AppComponent implements OnInit {
       this.firstTimerId = timer[0].id;
       this.firstTaskId = timer[0]?.tasks[0]?.id;
     });
+    this.routerEventsSubscription = this.router.events
+      .pipe(filter((event) => event instanceof NavigationEnd))
+      .subscribe(() => {
+        let lastRouteIndex =
+          this.router.config.filter((route) => route.path !== '**').length - 1;
+
+        this.lastRouteIsActive = this.router.isActive(
+          this.router.config[lastRouteIndex].path!,
+          true
+        );
+      });
+  }
+
+  ngOnDestroy(): void {
+    if (this.routerEventsSubscription) {
+      this.routerEventsSubscription.unsubscribe();
+    }
   }
 
   /** TimerService Methods */

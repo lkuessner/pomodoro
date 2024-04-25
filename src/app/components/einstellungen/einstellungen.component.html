@@ -1,0 +1,13 @@
+<div>Dauer der Aufgaben</div>
+<input
+  type="number"
+  [value]="taskDuration"
+  (change)="handleTaskDurationChange($event)"
+/>
+
+<div>Dauer der Pausen</div>
+<input
+  type="number"
+  [value]="breakDuration"
+  (change)="handleBreakDurationChange($event)"
+/>
