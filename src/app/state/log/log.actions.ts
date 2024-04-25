@@ -6,7 +6,6 @@ export const LogActions = createActionGroup({
   events: {
     AddLog: props<{ log: Log }>(),
     RemoveLogById: props<{ logId: string }>(),
-    GetLogState: emptyProps(),
     resetLogState: emptyProps(),
   },
 });
