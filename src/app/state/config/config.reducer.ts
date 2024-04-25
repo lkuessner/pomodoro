@@ -4,8 +4,8 @@ import { ConfigActions } from './config.actions';
 import { Config } from '../../interfaces/config';
 
 export const initialState: Config = {
-  taskDuration: 25,
-  breakDuration: 5,
+  taskDuration: 1500,
+  breakDuration: 300,
 };
 
 export const configReducer = createReducer(
