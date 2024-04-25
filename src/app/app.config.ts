@@ -8,6 +8,7 @@ import { logReducer } from './state/log/log.reducer';
 import { provideEffects } from '@ngrx/effects';
 import { LogEffects } from './state/log/log.effects';
 import { timerReducer } from './state/timer/timer.reducer';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -17,6 +18,6 @@ export const appConfig: ApplicationConfig = {
       logs: logReducer,
       timers: timerReducer,
     }),
-    provideEffects(LogEffects),
+    provideEffects(LogEffects), provideAnimationsAsync(),
   ],
 };
