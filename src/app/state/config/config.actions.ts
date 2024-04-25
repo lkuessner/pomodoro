@@ -3,8 +3,7 @@ import { createActionGroup, emptyProps, props } from '@ngrx/store';
 export const ConfigActions = createActionGroup({
   source: 'Config',
   events: {
-    UpdateTaskDuration: props<{ taskDuration: number }>(),
-    UpdateBreakDuration: props<{ breakDuration: number }>(),
+    UpdateConfigState: props<{ taskDuration: number; breakDuration: number }>(),
     GetConfigState: emptyProps(),
   },
 });

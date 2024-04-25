@@ -15,17 +15,12 @@ import { Observable } from 'rxjs';
 export class ConfigService {
   constructor(private store: Store) {}
 
-  setTaskDuration = (durationValue: number) => {
-    this.store.dispatch(
-      ConfigActions.updateTaskDuration({ taskDuration: durationValue })
-    );
+  /* Actions */
+  updateConfigState = (values: Config) => {
+    this.store.dispatch(ConfigActions.updateConfigState(values));
   };
 
-  setBreakDuration = (durationValue: number) => {
-    this.store.dispatch(
-      ConfigActions.updateBreakDuration({ breakDuration: durationValue })
-    );
-  };
+  /* Selectors */
 
   getTaskDuration(): Observable<number> {
     return this.store.select(selectConfigTaskDuration);

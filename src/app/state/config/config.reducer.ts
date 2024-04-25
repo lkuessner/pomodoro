@@ -14,15 +14,23 @@ export const configReducer = createReducer(
     return _state;
   }),
   on(
-    ConfigActions.updateTaskDuration,
-    (state, action) => (state = { ...state, taskDuration: action.taskDuration })
-  ),
-  on(
-    ConfigActions.updateBreakDuration,
+    ConfigActions.updateConfigState,
     (state, action) =>
       (state = {
-        ...state,
+        taskDuration: action.taskDuration,
         breakDuration: action.breakDuration,
       })
   )
+  // on(
+  //   ConfigActions.updateTaskDuration,
+  //   (state, action) => (state = { ...state, taskDuration: action.taskDuration })
+  // ),
+  // on(
+  //   ConfigActions.updateBreakDuration,
+  //   (state, action) =>
+  //     (state = {
+  //       ...state,
+  //       breakDuration: action.breakDuration,
+  //     })
+  // )
 );
