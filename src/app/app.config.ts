@@ -1,4 +1,4 @@
-import { ApplicationConfig } from '@angular/core';
+import { ApplicationConfig, isDevMode } from '@angular/core';
 import { provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
@@ -18,6 +18,7 @@ export const appConfig: ApplicationConfig = {
       logs: logReducer,
       timers: timerReducer,
     }),
-    provideEffects(LogEffects), provideAnimationsAsync(),
+    provideEffects(LogEffects),
+    provideAnimationsAsync(),
   ],
 };

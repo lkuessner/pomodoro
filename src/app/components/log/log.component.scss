@@ -1,0 +1,17 @@
+@use "../../../assets/styles/colors" as colors;
+
+.logHeadline {
+  color: colors.$WHITE;
+}
+
+.logsContainer {
+  height: 500px;
+  border: 1px solid colors.$WHITE;
+  border-radius: 6px;
+  padding: 1rem;
+
+  .log {
+    display: flex;
+    color: colors.$WHITE;
+  }
+}

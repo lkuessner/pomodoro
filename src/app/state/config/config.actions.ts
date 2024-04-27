@@ -4,6 +4,5 @@ export const ConfigActions = createActionGroup({
   source: 'Config',
   events: {
     UpdateConfigState: props<{ taskDuration: number; breakDuration: number }>(),
-    GetConfigState: emptyProps(),
   },
 });

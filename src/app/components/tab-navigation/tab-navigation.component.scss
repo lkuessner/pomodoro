@@ -8,10 +8,10 @@
   width: 100%;
   max-width: sizes.$MAX_WIDTH;
   margin: 0 auto;
+  user-select: none;
 
   .container {
     display: flex;
-    // flex: 0 1 80%;
     width: 100%;
     align-items: center;
 
@@ -41,6 +41,32 @@
         padding: 0;
         margin: 0;
 
+        .tooltip {
+          position: relative;
+          display: inline-block;
+        }
+
+        .tooltip .tooltiptext {
+          visibility: hidden;
+          background-color: colors.$HRM_PRIMARY_COLOR;
+          color: colors.$WHITE;
+          text-align: center;
+          padding: 5px 0;
+          border-radius: 6px;
+          position: absolute;
+          z-index: 1;
+          width: 85%;
+        }
+
+        .tooltip:hover .tooltiptext {
+          visibility: visible;
+        }
+
+        .disabled {
+          cursor: not-allowed;
+          user-select: none;
+        }
+
         li {
           display: flex;
           height: 100%;
@@ -52,17 +78,26 @@
             align-items: center;
             height: 2.25rem;
             padding: 0.25rem 0.5rem;
-            color: colors.$COLOR_BLACK;
+            color: colors.$BLACK;
             text-decoration: none;
+
+            &:hover {
+              background: lighten(grey, 30%);
+              border-top-left-radius: sizes.$TAB_BORDER_RADIUS;
+              border-top-right-radius: sizes.$TAB_BORDER_RADIUS;
+            }
           }
 
           .activeAnchor {
-            background-color: #00a1e4;
-            color: white;
+            background-color: colors.$HRM_PRIMARY_COLOR;
+            color: colors.$WHITE;
             border: 0px solid transparent;
             border-bottom: none;
             border-top-left-radius: sizes.$TAB_BORDER_RADIUS;
             border-top-right-radius: sizes.$TAB_BORDER_RADIUS;
+            &:hover {
+              background-color: colors.$HRM_PRIMARY_COLOR !important;
+            }
           }
         }
       }

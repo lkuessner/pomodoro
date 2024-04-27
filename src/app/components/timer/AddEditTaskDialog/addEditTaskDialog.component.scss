@@ -1,0 +1,16 @@
+:host {
+  min-width: 500px;
+  width: 100%;
+
+  .full-width {
+    width: 100%;
+  }
+  .mat-mdc-dialog-content {
+    width: 100%;
+  }
+  .mat-mdc-dialog-actions {
+    justify-content: center;
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+}

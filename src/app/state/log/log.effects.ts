@@ -3,8 +3,8 @@ import { Actions, createEffect } from '@ngrx/effects';
 import { filter, tap } from 'rxjs/operators';
 import { LogService } from '../../services/LogService/log.service';
 import { Log } from '../../interfaces/log';
-import { uuidv4 } from '../../functions';
 import { LogActions } from './log.actions';
+import { v4 } from 'uuid';
 
 @Injectable()
 export class LogEffects {
@@ -20,13 +20,13 @@ export class LogEffects {
         ),
         tap((actionn) => {
           const log: Log = {
-            id: uuidv4(),
+            id: v4(),
             type: actionn.type,
             timestamp: Date.now(),
           };
           this.logService.addLog(log);
         })
       ),
-    { dispatch: false } // Prevent this effect from dispatching new actions
+    { dispatch: false }
   );
 }

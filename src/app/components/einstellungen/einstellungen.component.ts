@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ConfigService } from '../../services';
 import {
   FormControl,
@@ -13,6 +13,9 @@ import {
 import { ErrorStateMatcher } from '@angular/material/core';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { minutesToSeconds, secondsToMinutes } from '../../functions';
+import { Subscription, take } from 'rxjs';
+import { MatButton } from '@angular/material/button';
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(
     control: FormControl | null,
@@ -34,31 +37,45 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
     FormsModule,
     MatFormFieldModule,
     MatInputModule,
+    MatButton,
     ReactiveFormsModule,
   ],
   templateUrl: './einstellungen.component.html',
   styleUrl: './einstellungen.component.scss',
 })
-export class EinstellungenComponent {
+export class EinstellungenComponent implements OnInit, OnDestroy {
+  taskDuration: number = 0;
   formGroup: FormGroup = this.formBuilder.group({
-    taskDuration: new FormControl(0, [Validators.required]),
-    breakDuration: new FormControl(0, [Validators.required]),
+    taskDuration: new FormControl(undefined, [Validators.required]),
+    breakDuration: new FormControl(undefined, [Validators.required]),
   });
-
+  getConfigStateSub!: Subscription;
   matcher = new MyErrorStateMatcher();
   constructor(
     private configService: ConfigService,
     private formBuilder: FormBuilder
-  ) {
-    this.configService.getConfigState().subscribe((state) => {
-      this.formGroup.setValue({
-        taskDuration: state.taskDuration,
-        breakDuration: state.breakDuration,
+  ) {}
+
+  ngOnInit() {
+    this.getConfigStateSub = this.configService
+      .getConfigState()
+      .pipe(take(1))
+      .subscribe((state) => {
+        this.formGroup.setValue({
+          taskDuration: secondsToMinutes(state.taskDuration),
+          breakDuration: secondsToMinutes(state.breakDuration),
+        });
       });
-    });
+  }
+
+  ngOnDestroy(): void {
+    this.getConfigStateSub.unsubscribe();
   }
 
   onSubmit() {
-    this.configService.updateConfigState(this.formGroup.value);
+    this.configService.updateConfigState({
+      taskDuration: minutesToSeconds(this.formGroup.value['taskDuration']),
+      breakDuration: minutesToSeconds(this.formGroup.value['breakDuration']),
+    });
   }
 }

@@ -3,135 +3,108 @@ import { createReducer, on } from '@ngrx/store';
 import { TaskActions, TimerActions } from './timer.actions';
 import { Timer, TimerStoreStateType } from '../../interfaces/timer';
 import { Task } from '../../interfaces/task';
-import { uuidv4 } from '../../functions';
+import { v4 as uuidv4 } from 'uuid';
 
 const buildTask = (taskTitle: Task['title']): Task => {
   return {
     id: uuidv4(),
     isDone: false,
+    isActive: false,
     title: taskTitle,
   };
 };
 
 const defaultTimerObject: Timer = {
   id: uuidv4(),
-  tasks: [buildTask('Erster Task Initial')],
-  duration: 0,
+  tasks: [
+    buildTask('Müll rausbringen'),
+    buildTask('Küche putzen'),
+    buildTask('Sport machen'),
+  ],
+  isBreakActive: false,
   isActive: false,
   isExpired: false,
 };
 
-export const initialState: TimerStoreStateType = {
-  timers: [defaultTimerObject],
-  activeTimers: [],
-  expiredTimers: [],
-};
+export const initialState: TimerStoreStateType = defaultTimerObject;
 
 export const timerReducer = createReducer(
   initialState,
-  on(TimerActions.addTimer, (state) => {
-    const { timers } = state;
-    const expandedTimers = [...timers, defaultTimerObject];
-    state = { ...state, timers: expandedTimers };
+  on(TimerActions.toggleTimerIsActive, (state) => {
+    state = { ...state, isActive: !state.isActive };
     return state;
   }),
-  on(TimerActions.toggleTimerIsActive, (state, { timerId }) => {
-    const indexOfTimer = state.timers.map((timer) => timer.id).indexOf(timerId);
-    const restTimers = state.timers.filter((timer) => timer.id !== timerId);
-    let timerById = state.timers[indexOfTimer];
-    const changedTimer = { ...timerById, isActive: !timerById.isActive };
-    state = { ...state, timers: [...restTimers, changedTimer] };
+  on(TimerActions.toggleTimerIsBreakActive, (state) => {
+    state = { ...state, isBreakActive: !state.isBreakActive };
     return state;
   }),
-  on(TimerActions.toggleTimerIsExpired, (state, { timerId }) => {
-    const indexOfTimer = state.timers.map((timer) => timer.id).indexOf(timerId);
-    const restTimers = state.timers.filter((timer) => timer.id !== timerId);
-    let timerById = state.timers[indexOfTimer];
-    const changedTimer = { ...timerById, isExpired: !timerById.isExpired };
-    state = { ...state, timers: [...restTimers, changedTimer] };
+  on(TimerActions.toggleTimerIsExpired, (state) => {
+    state = { ...state, isExpired: !state.isExpired };
     return state;
   }),
-  on(TaskActions.addTask, (state, { timerId, taskTitle }) => {
-    const { timers } = state;
-    const timerIndex = timers.map((timer) => timer.id).indexOf(timerId);
-    const restTimers = state.timers.filter((timer) => timer.id !== timerId);
-    const targetById = timers[timerIndex];
+  on(TaskActions.addTask, (state, { taskTitle }) => {
     const newTask = buildTask(taskTitle);
-    if (targetById) {
-      const changedTimer: Timer = {
-        ...targetById,
-        tasks: [...targetById.tasks, newTask],
+    state = { ...state, tasks: [...state.tasks, newTask] };
+    return state;
+  }),
+  on(TaskActions.removeTask, (state, { taskId }) => {
+    const filteredTasks = state.tasks.filter((task) => task.id !== taskId);
+    state = { ...state, tasks: filteredTasks };
+    return state;
+  }),
+  on(TaskActions.setTaskTitle, (state, { taskId, taskTitle }) => {
+    const taskIndex = state.tasks.findIndex((task) => task.id === taskId);
+
+    if (taskIndex !== -1) {
+      const updatedTasks = [...state.tasks];
+      updatedTasks[taskIndex] = {
+        ...updatedTasks[taskIndex],
+        title: taskTitle,
       };
 
-      state = { ...state, timers: [...restTimers, changedTimer] };
-
-      return state;
+      return { ...state, tasks: updatedTasks };
     } else {
-      throw new Error(
-        `No Timer to add a new Task with TimerID ${timerId} found.`
-      );
+      throw new Error(`No task found with taskId ${taskId} to set title.`);
     }
   }),
-  on(TaskActions.removeTask, (state, { timerId, taskId }) => {
-    const timerById = state.timers.find((timer) => timer.id === timerId);
-    const restTimers = state.timers.filter((timer) => timer.id !== timerId);
-    const filteredTasks = timerById?.tasks.filter((task) => task.id !== taskId);
-
-    if (timerById !== undefined && filteredTasks !== undefined) {
-      const changedTimer: Timer = {
-        ...timerById,
-        tasks: filteredTasks,
-      };
-
-      state = { ...state, timers: [...restTimers, changedTimer] };
-
-      return state;
-    } else {
-      throw new Error(
-        `No Timer to add a new Task with TimerID ${timerId} found.`
-      );
-    }
+  on(TaskActions.toggleTaskIsDone, (state, { taskId }) => {
+    return {
+      ...state,
+      tasks: state.tasks.map((task) => {
+        if (task.id === taskId) {
+          return { ...task, isDone: !task.isDone };
+        }
+        return task;
+      }),
+    };
   }),
-  on(TaskActions.setTaskTitle, (state, { timerId, taskId, taskTitle }) => {
-    const timerById = state.timers.find((timer) => timer.id === timerId);
-    const taskById = timerById?.tasks.find((task) => task.id === taskId);
-    if (timerById !== undefined && taskById !== undefined) {
-      const changedTask = { ...taskById, title: taskTitle };
-      const restTimers = state.timers.filter((timer) => timer.id !== timerId);
-      const restTasks = timerById?.tasks.filter((task) => task.id !== taskId);
-      const changedTimer: Timer = {
-        ...timerById,
-        tasks: [...restTasks, changedTask],
-      };
-
-      state = { ...state, timers: [...restTimers, changedTimer] };
-
-      return state;
-    } else {
-      throw new Error(
-        `No Timer to add a new Task with TimerID ${timerId} found.`
-      );
-    }
+  on(TaskActions.toggleTaskIsActive, (state, { taskId }) => {
+    return {
+      ...state,
+      tasks: state.tasks.map((task) => {
+        if (task.id === taskId) {
+          return { ...task, isActive: !task.isActive };
+        }
+        return task;
+      }),
+    };
   }),
-  on(TaskActions.toggleTaskIsDone, (state, { timerId, taskId }) => {
-    const timerById = state.timers.find((timer) => timer.id === timerId);
-    const taskById = timerById?.tasks.find((task) => task.id === taskId);
-    if (timerById !== undefined && taskById !== undefined) {
-      const changedTask = { ...taskById, isDone: !taskById.isDone };
-      const restTimers = state.timers.filter((timer) => timer.id !== timerId);
-      const restTasks = timerById?.tasks.filter((task) => task.id !== taskId);
-      const changedTimer: Timer = {
-        ...timerById,
-        tasks: [...restTasks, changedTask],
-      };
-
-      state = { ...state, timers: [...restTimers, changedTimer] };
-
-      return state;
-    } else {
-      throw new Error(
-        `No Timer to add a new Task with TimerID ${timerId} found.`
-      );
-    }
-  })
+  on(TaskActions.resetAllTasksIsActive, (state) => ({
+    ...state,
+    tasks: state.tasks.map((task) => ({
+      ...task,
+      isActive: false,
+    })),
+  })),
+  on(TaskActions.resetAllTasksIsDone, (state) => ({
+    ...state,
+    tasks: state.tasks.map((task) => ({
+      ...task,
+      isDone: false,
+    })),
+  })),
+  on(TaskActions.clearAllTasks, (state) => ({
+    ...state,
+    tasks: [],
+  }))
 );

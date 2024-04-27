@@ -13,11 +13,7 @@ export const logReducer = createReducer(
   }),
   on(LogActions.removeLogById, (state, action) => {
     state = state.filter((log) => log.id !== action.logId);
-    console.log(state);
 
-    return state;
-  }),
-  on(LogActions.getLogState, (state, _action) => {
     return state;
   }),
   on(LogActions.resetLogState, (state, _action) => {
