@@ -10,9 +10,6 @@ export const initialState: Config = {
 
 export const configReducer = createReducer(
   initialState,
-  on(ConfigActions.getConfigState, (_state) => {
-    return _state;
-  }),
   on(
     ConfigActions.updateConfigState,
     (state, action) =>
@@ -21,16 +18,4 @@ export const configReducer = createReducer(
         breakDuration: action.breakDuration,
       })
   )
-  // on(
-  //   ConfigActions.updateTaskDuration,
-  //   (state, action) => (state = { ...state, taskDuration: action.taskDuration })
-  // ),
-  // on(
-  //   ConfigActions.updateBreakDuration,
-  //   (state, action) =>
-  //     (state = {
-  //       ...state,
-  //       breakDuration: action.breakDuration,
-  //     })
-  // )
 );

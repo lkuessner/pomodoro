@@ -14,6 +14,10 @@ export class LogService {
     return this.store.select(selectLogState);
   }
 
+  // getLog() {
+  //   this.store.select(selectLogsAsStrings);
+  // }
+
   addLog(log: Log): void {
     this.store.dispatch(LogActions.addLog({ log }));
   }

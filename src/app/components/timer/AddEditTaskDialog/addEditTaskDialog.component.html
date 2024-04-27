@@ -1,0 +1,17 @@
+<mat-dialog-content>
+  <p>{{ prompt }}</p>
+  <mat-form-field class="full-width">
+    <mat-label>Aufgabentitel</mat-label>
+    <input
+      matInput
+      placeholder="Küche putzen"
+      [(ngModel)]="data.dialogTaskTitle"
+    />
+  </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button color="warn" (click)="onNoClick()">Abbrechen</button>
+  <button mat-button color="primary" [mat-dialog-close]="data" cdkFocusInitial>
+    Speichern
+  </button>
+</mat-dialog-actions>

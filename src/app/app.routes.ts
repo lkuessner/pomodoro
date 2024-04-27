@@ -9,7 +9,6 @@ export const routes: Routes = [
     path: '',
     title: 'Wecker',
     component: TimerComponent,
-    // redirectTo: 'wecker',
   },
   {
     title: 'Einstellungen',
@@ -21,5 +20,5 @@ export const routes: Routes = [
     path: 'log',
     component: LogComponent,
   },
-  { path: '**', component: PageNotFoundComponent }, // Wildcard route for a 404 page
+  { path: '**', component: PageNotFoundComponent },
 ];

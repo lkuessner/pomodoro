@@ -1,1 +1,158 @@
-<div class="container">timer works</div>
+<div class="container">
+  <div class="timerContainer">
+    <h2 class="timerStatus">
+      <div *ngIf="allTasksDone">
+        <h2>
+          Prima, alles fertig. <br />
+          Zeit zum Entspannen!
+        </h2>
+      </div>
+
+      <div *ngIf="!allTasksDone && timer.isBreakActive">
+        <div *ngIf="timer.isActive; else pauseBlock">Pause läuft</div>
+        <ng-template #pauseBlock>
+          <div>Pause</div>
+        </ng-template>
+        <h3>Nächste Aufgabe: {{ currentTask.title }}</h3>
+      </div>
+
+      <div *ngIf="!allTasksDone && !timer.isBreakActive">
+        <div *ngIf="timer.isActive; else weckerBlock">Wecker läuft</div>
+        <ng-template #weckerBlock>
+          <div>Wecker</div>
+        </ng-template>
+        <h3>Aufgabe: {{ currentTask.title }}</h3>
+      </div>
+    </h2>
+    <div class="timer">
+      {{ formatTimerDuration(timerCounter) }}
+    </div>
+    <div class="timerControls upperControls">
+      @if(timer.isActive){
+      <button
+        mat-fab
+        extended
+        class="action-button"
+        (click)="pauseTimer()"
+        [disabled]="!timer.isActive || allTasksDone"
+        title="Pause"
+      >
+        <mat-icon>pause</mat-icon>
+        Pause
+      </button>
+      } @else {
+      <button
+        mat-fab
+        extended
+        class="action-button"
+        (click)="startTimer()"
+        [disabled]="timerCounter === 0 || allTasksDone"
+        title="Start"
+      >
+        <mat-icon>play_arrow</mat-icon>
+        Start
+      </button>
+      }
+      <button
+        mat-fab
+        extended
+        class="action-button"
+        (click)="nextTask()"
+        [disabled]="allTasksDone"
+        title="Nächste Aufgabe"
+      >
+        <mat-icon>start</mat-icon>
+        Nächste
+      </button>
+    </div>
+    <div class="timerControls">
+      <button
+        mat-fab
+        extended
+        class="action-button"
+        (click)="resetCurrentTimer()"
+        [disabled]="timer.isActive"
+        title="Aufgabe zurücksetzen"
+      >
+        <mat-icon>restart_alt</mat-icon>
+        Aufgabe
+      </button>
+      <button
+        mat-fab
+        extended
+        class="action-button"
+        (click)="resetEntireTimer()"
+        [disabled]="timer.isActive"
+        title="Wecker zurücksetzen"
+      >
+        <mat-icon>history</mat-icon>
+        Wecker
+      </button>
+    </div>
+  </div>
+
+  <div class="tasksContainer">
+    <div class="taskHeaderContainer">
+      <span class="tasksTitle">Tasks</span>
+      <div class="actions">
+        <button
+          mat-medium-icon-button
+          mat-icon-button
+          (click)="clearAllTasks()"
+        >
+          <mat-icon>delete_sweep</mat-icon>
+        </button>
+        <button
+          mat-medium-icon-button
+          mat-icon-button
+          (click)="addTaskDialog()"
+        >
+          <mat-icon>add</mat-icon>
+        </button>
+      </div>
+    </div>
+    <hr />
+    @for (task of timer.tasks; track task){
+    <mat-card class="taskCard" [ngClass]="{ taskCardIsActive: task.isActive }">
+      <mat-card-content
+        ><div class="taskCardContent">
+          <div class="taskDone">
+            @if(task.isDone) {
+            <mat-icon class="isDoneIcon" (click)="toggleTaskIsDone(task.id)"
+              >check_circle</mat-icon
+            >
+            }@else {
+            <mat-icon class="isDoneIcon" (click)="toggleTaskIsDone(task.id)"
+              >check_circle_outlined</mat-icon
+            >
+            }
+          </div>
+          <div class="titleEditContainer">
+            <div class="taskTitle">
+              {{ task.title }}
+            </div>
+            <div
+              class="editDeleteTaskContainer"
+              [ngClass]="{ isDisabled: task.isActive }"
+            >
+              @if(task.isActive){
+              <mat-icon class="deleteIcon isDisabled">delete</mat-icon>
+              <mat-icon class="editIcon isDisabled">edit</mat-icon>
+              } @else {
+              <mat-icon class="deleteIcon" (click)="deleteTaskDialog(task.id)"
+                >delete</mat-icon
+              >
+              <mat-icon
+                class="editIcon"
+                (click)="editTaskDialog(task.title, task.id)"
+                >edit</mat-icon
+              >
+              }
+            </div>
+          </div>
+        </div></mat-card-content
+      >
+    </mat-card>
+    }
+  </div>
+</div>
