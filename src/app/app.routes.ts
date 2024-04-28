@@ -11,14 +11,14 @@ export const routes: Routes = [
     component: TimerComponent,
   },
   {
-    title: 'Einstellungen',
-    path: 'einstellungen',
-    component: EinstellungenComponent,
-  },
-  {
     title: 'Ereignisse',
     path: 'log',
     component: LogComponent,
+  },
+  {
+    title: 'Einstellungen',
+    path: 'einstellungen',
+    component: EinstellungenComponent,
   },
   { path: '**', component: PageNotFoundComponent },
 ];

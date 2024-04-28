@@ -2,8 +2,8 @@
 <div
   class="views-container"
   [ngClass]="{
-    isLastRouteBorder: lastRouteIsActive,
-    expiredTimerAnimation: timer.isExpired
+    isLastRouteBorder: isLastRouteActive,
+    attentionAnimation: countdown.isBreakActive || allTasksDone
   }"
 >
   <div class="content-padding">

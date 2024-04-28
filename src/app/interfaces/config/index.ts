@@ -1,6 +1,1 @@
-export {
-  Config,
-  ConfigServiceStateType,
-  ConfigMethods,
-  IConfigService,
-} from './config.model';
+export { ConfigState, IConfigService } from './config.model';

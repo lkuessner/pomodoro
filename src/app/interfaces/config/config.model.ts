@@ -1,17 +1,8 @@
-import { Observable } from 'rxjs';
-
-export interface Config {
+export interface ConfigState {
   taskDuration: number;
   breakDuration: number;
 }
 
-export type ConfigServiceStateType = Observable<Config>;
-
-export interface ConfigMethods {
-  setTaskDuration: (durationValue: number) => void;
-  setBreakDuration: (durationValue: number) => void;
-}
-
-export interface IConfigService extends ConfigMethods {
-  config$: ConfigServiceStateType;
+export interface IConfigService {
+  updateConfigState(config: ConfigState): void;
 }

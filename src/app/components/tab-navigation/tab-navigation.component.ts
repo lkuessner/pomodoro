@@ -1,10 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Route, Router, RouterLink, RouterLinkActive } from '@angular/router';
-import { TimerService } from '../../services';
 import { Subscription } from 'rxjs';
 import { MatIcon } from '@angular/material/icon';
-import { Timer } from '../../interfaces/timer';
+import { CountdownState } from '../../interfaces/countdown';
+import { CountdownService } from '../../services';
 
 @Component({
   selector: 'app-tab-navigation',
@@ -13,20 +13,28 @@ import { Timer } from '../../interfaces/timer';
   templateUrl: './tab-navigation.component.html',
   styleUrl: './tab-navigation.component.scss',
 })
-export class TabNavigationComponent implements OnInit {
+export class TabNavigationComponent implements OnInit, OnDestroy {
   navigationItems: Array<Route> = [];
-  timer!: Timer;
-  timerServiceSubscription!: Subscription;
-  constructor(private router: Router, private timerService: TimerService) {}
+  countdown!: CountdownState;
+  countdownSubscription$: Subscription;
+  constructor(
+    private router: Router,
+    private countdownService: CountdownService
+  ) {
+    this.countdownSubscription$ = this.countdownService
+      .getCountdownState()
+      .subscribe((state) => {
+        this.countdown = state;
+      });
+  }
 
   ngOnInit(): void {
     this.navigationItems = this.router.config.filter(
       (route) => route.path !== '**'
     );
-    this.timerServiceSubscription = this.timerService
-      .getTimer()
-      .subscribe((state) => {
-        this.timer = state;
-      });
+  }
+
+  ngOnDestroy(): void {
+    this.countdownSubscription$.unsubscribe();
   }
 }
