@@ -6,15 +6,15 @@
       <input
         type="number"
         matInput
-        formControlName="taskDuration"
-        value="formGroup.taskDuration"
+        formControlName="startValue"
+        value="formGroup.startValue"
         [errorStateMatcher]="matcher"
         placeholder="25"
       />
-      @if (formGroup &&
-      !formGroup.controls['taskDuration'].hasError('required')) {
+      @if (formGroup && !formGroup.controls['startValue'].hasError('required'))
+      {
       <mat-error>Bitte gib eine Aufgabendauer an.</mat-error>
-      } @if (formGroup.controls['taskDuration'].hasError('required')) {
+      } @if (formGroup.controls['startValue'].hasError('required')) {
       <mat-error
         >Angabe einer Aufgabendauer ist <strong>notwendig</strong>.</mat-error
       >
@@ -26,15 +26,15 @@
       <input
         type="number"
         matInput
-        formControlName="breakDuration"
-        value="secondsToMinutes(breakDuration)"
+        formControlName="breakStartValue"
+        value="formGroup.breakStartValue"
         [errorStateMatcher]="matcher"
         placeholder="25"
       />
       @if (formGroup &&
-      !formGroup.controls['breakDuration'].hasError('required')) {
+      !formGroup.controls['breakStartValue'].hasError('required')) {
       <mat-error>Bitte gib eine Pausendauer an.</mat-error>
-      } @if (formGroup.controls['breakDuration'].hasError('required')) {
+      } @if (formGroup.controls['breakStartValue'].hasError('required')) {
       <mat-error
         >Angabe einer Pausendauer ist <strong>notwendig</strong>.</mat-error
       >

@@ -1,25 +1,12 @@
-<div>
-  <h1>Countdown: {{ countdown$ | async | json }}</h1>
-  <h1>Tasks: {{ tasks$ | async | json }}</h1>
-  <h1>Logs: {{ logs$ | async | json }}</h1>
-  <input type="number" [(ngModel)]="startValue" />
-  <button (click)="start()">Start Countdown</button>
-  <button (click)="stop()">Stop Countdown</button>
-  <button (click)="reset()">Reset Countdown</button>
-  <button (click)="setStartValue()">Set Start Value</button>
-</div>
-
-<router-outlet></router-outlet>
-
-<!-- <app-tab-navigation></app-tab-navigation>
+<app-tab-navigation></app-tab-navigation>
 <div
   class="views-container"
   [ngClass]="{
-    isLastRouteBorder: lastRouteIsActive,
-    expiredTimerAnimation: timer.isExpired
+    isLastRouteBorder: isLastRouteActive,
+    attentionAnimation: countdown.isBreakActive || allTasksDone
   }"
 >
   <div class="content-padding">
     <router-outlet></router-outlet>
   </div>
-</div> -->
+</div>

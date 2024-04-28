@@ -17,8 +17,9 @@ export class LogEffects {
           (action) =>
             action.type !== LogsActions.addLog.type &&
             action.type !== LogsActions.resetLogState.type &&
-            action.type !== LogsActions.removeLogById.type &&
-            action.type !== CountdownActions.decrementCountdown.type
+            action.type !== LogsActions.removeLogByID.type &&
+            action.type !== CountdownActions.decrementCountdown.type &&
+            action.type !== CountdownActions.setCountdownExpired.type
         ),
         tap((actionn) => {
           const log: Log = {

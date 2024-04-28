@@ -10,3 +10,31 @@ export const selectCountdownState = createSelector(
     return countdown;
   }
 );
+
+// export const selectCountdownValue = createSelector(
+//   selectCountdown,
+//   (countdown) => {
+//     return countdown.value;
+//   }
+// );
+
+export const selectCountdownStartValue = createSelector(
+  selectCountdown,
+  (countdown) => {
+    return countdown.startValue;
+  }
+);
+
+export const selectCountdownRunning = createSelector(
+  selectCountdown,
+  (countdown) => {
+    return countdown.running;
+  }
+);
+
+export const selectCountdownBreakStartValue = createSelector(
+  selectCountdown,
+  (countdown) => {
+    return countdown.breakStartValue;
+  }
+);

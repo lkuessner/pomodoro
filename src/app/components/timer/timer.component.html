@@ -1,50 +1,47 @@
-<div>timer works</div>
-<div>{{ countdown$ | async | json }}</div>
-<div>{{ tasks$ | async | json }}</div>
-<div>{{ logs$ | async | json }}</div>
-<a
-  routerLinkActive
-  [routerLinkActiveOptions]="{ exact: true }"
-  routerLink="test"
-  >to test page</a
->
-<!-- <div class="container">
+<div class="container">
   <div class="timerContainer">
     <h2 class="timerStatus">
-      <div *ngIf="allTasksDone">
+      <div>
+        @if(tasksArray.length === 0){
+        <h2>
+          Ziemlich leer hier... <br />
+          Füge Aufgaben hinzu!
+        </h2>
+        } @else if(allTasksDone) {
         <h2>
           Prima, alles fertig. <br />
           Zeit zum Entspannen!
         </h2>
+        } @else {
+        <div *ngIf="!allTasksDone && countdown.isBreakActive">
+          <div *ngIf="countdown.running; else pauseBlock">Pause läuft</div>
+          <ng-template #pauseBlock>
+            <div>Pause</div>
+          </ng-template>
+          <h3>Nächste Aufgabe: {{ tasksArray[0].title }}</h3>
+        </div>
+        }
       </div>
 
-      <div *ngIf="!allTasksDone && timer.isBreakActive">
-        <div *ngIf="timer.isActive; else pauseBlock">Pause läuft</div>
-        <ng-template #pauseBlock>
-          <div>Pause</div>
-        </ng-template>
-        <h3>Nächste Aufgabe: {{ currentTask.title }}</h3>
-      </div>
-
-      <div *ngIf="!allTasksDone && !timer.isBreakActive">
-        <div *ngIf="timer.isActive; else weckerBlock">Wecker läuft</div>
+      <div *ngIf="!allTasksDone && !countdown.isBreakActive">
+        <div *ngIf="countdown.running; else weckerBlock">Wecker läuft</div>
         <ng-template #weckerBlock>
           <div>Wecker</div>
         </ng-template>
-        <h3>Aufgabe: {{ currentTask.title }}</h3>
+        <h3>Aufgabe: {{ tasksArray[0].title }}</h3>
       </div>
     </h2>
     <div class="timer">
-      {{ formatTimerDuration(timerCounter) }}
+      {{ formatTimerDuration(countdown.value) }}
     </div>
     <div class="timerControls upperControls">
-      @if(timer.isActive){
+      @if(countdown.running){
       <button
         mat-fab
         extended
         class="action-button"
-        (click)="pauseTimer()"
-        [disabled]="!timer.isActive || allTasksDone"
+        (click)="stopCountdown()"
+        [disabled]="!countdown.running || allTasksDone"
         title="Pause"
       >
         <mat-icon>pause</mat-icon>
@@ -55,49 +52,65 @@
         mat-fab
         extended
         class="action-button"
-        (click)="startTimer()"
-        [disabled]="timerCounter === 0 || allTasksDone"
+        [ngClass]="{
+          actionButtonDisabled: countdown.value === 0 || allTasksDone
+        }"
+        (click)="startCountdown()"
+        [disabled]="countdown.value === 0 || allTasksDone"
         title="Start"
       >
         <mat-icon>play_arrow</mat-icon>
         Start
       </button>
       }
-      <button
-        mat-fab
-        extended
-        class="action-button"
-        (click)="nextTask()"
-        [disabled]="allTasksDone"
-        title="Nächste Aufgabe"
-      >
-        <mat-icon>start</mat-icon>
-        Nächste
-      </button>
     </div>
     <div class="timerControls">
       <button
         mat-fab
         extended
         class="action-button"
-        (click)="resetCurrentTimer()"
-        [disabled]="timer.isActive"
-        title="Aufgabe zurücksetzen"
-      >
-        <mat-icon>restart_alt</mat-icon>
-        Aufgabe
-      </button>
-      <button
-        mat-fab
-        extended
-        class="action-button"
-        (click)="resetEntireTimer()"
-        [disabled]="timer.isActive"
+        (click)="resetCountdownAndTasks()"
+        [ngClass]="{ actionButtonDisabled: countdown.running }"
+        [disabled]="countdown.running"
         title="Wecker zurücksetzen"
       >
         <mat-icon>history</mat-icon>
         Wecker
       </button>
+
+      @if(countdown.isBreakActive){
+      <button
+        mat-fab
+        extended
+        class="action-button"
+        [ngClass]="{
+          actionButtonDisabled: countdown.running || countdown.expired
+        }"
+        (click)="resetCurrentTimer()"
+        [disabled]="countdown.running || countdown.expired"
+        title="Aufgabe zurücksetzen"
+      >
+        <mat-icon>skip_next</mat-icon>
+        <div>Skip</div>
+      </button>
+
+      }@else {
+      <button
+        mat-fab
+        extended
+        class="action-button"
+        [ngClass]="{
+          actionButtonDisabled:
+            countdown.running || countdown.value === countdown.startValue
+        }"
+        (click)="resetCurrentTimer()"
+        [disabled]="countdown.running"
+        title="Aufgabe zurücksetzen"
+      >
+        <mat-icon>restart_alt</mat-icon>
+        <div>Zeit</div>
+      </button>
+      }
     </div>
   </div>
 
@@ -108,6 +121,19 @@
         <button
           mat-medium-icon-button
           mat-icon-button
+          [ngClass]="{ actionButtonDisabled: countdown.running }"
+          [disabled]="countdown.running"
+          (click)="addExampleTasks()"
+        >
+          <mat-icon>quiz</mat-icon>
+        </button>
+        <button
+          mat-medium-icon-button
+          mat-icon-button
+          [ngClass]="{
+            actionButtonDisabled: countdown.running || !tasksArray.length
+          }"
+          [disabled]="countdown.running"
           (click)="clearAllTasks()"
         >
           <mat-icon>delete_sweep</mat-icon>
@@ -122,17 +148,21 @@
       </div>
     </div>
     <hr />
-    @for (task of timer.tasks; track task){
+    @for (task of tasksArray; track task){
     <mat-card class="taskCard" [ngClass]="{ taskCardIsActive: task.isActive }">
       <mat-card-content
         ><div class="taskCardContent">
           <div class="taskDone">
             @if(task.isDone) {
-            <mat-icon class="isDoneIcon" (click)="toggleTaskIsDone(task.id)"
+            <mat-icon
+              class="isDoneIcon"
+              (click)="toggleTaskIsDone(task.id, task.isDone)"
               >check_circle</mat-icon
             >
             }@else {
-            <mat-icon class="isDoneIcon" (click)="toggleTaskIsDone(task.id)"
+            <mat-icon
+              class="isDoneIcon"
+              (click)="toggleTaskIsDone(task.id, task.isDone)"
               >check_circle_outlined</mat-icon
             >
             }
@@ -141,20 +171,27 @@
             <div class="taskTitle">
               {{ task.title }}
             </div>
-            <div
-              class="editDeleteTaskContainer"
-              [ngClass]="{ isDisabled: task.isActive }"
-            >
-              @if(task.isActive){
-              <mat-icon class="deleteIcon isDisabled">delete</mat-icon>
-              <mat-icon class="editIcon isDisabled">edit</mat-icon>
-              } @else {
+            <div class="editDeleteTaskContainer">
+              @if(!countdown.running){
               <mat-icon class="deleteIcon" (click)="deleteTaskDialog(task.id)"
                 >delete</mat-icon
               >
               <mat-icon
                 class="editIcon"
                 (click)="editTaskDialog(task.title, task.id)"
+                >edit</mat-icon
+              >
+
+              } @else {
+
+              <mat-icon
+                class="deleteIcon"
+                [ngClass]="{ actionButtonDisabled: countdown.running }"
+                >delete</mat-icon
+              >
+              <mat-icon
+                class="editIcon"
+                [ngClass]="{ actionButtonDisabled: countdown.running }"
                 >edit</mat-icon
               >
               }
@@ -165,4 +202,4 @@
     </mat-card>
     }
   </div>
-</div> -->
+</div>

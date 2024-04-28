@@ -1,3 +1,5 @@
+import { Observable } from 'rxjs';
+
 export interface Log {
   id: string;
   type: string;
@@ -5,6 +7,7 @@ export interface Log {
 }
 
 export interface ILogsService {
+  getLogsState: () => Observable<LogsState>;
   addLog: (log: Log) => void;
   removeLog: (log: Log['id']) => void;
   resetLogs: () => void;

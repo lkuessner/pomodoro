@@ -4,19 +4,23 @@ import { Task } from '../../interfaces/tasks';
 export const TaskActions = createActionGroup({
   source: 'Task',
   events: {
-    AddTask: props<{ taskTitle: Task['title'] }>(),
-    RemoveTask: props<{ taskId: Task['id'] }>(),
-    SetTaskTitle: props<{
+    'Add Task': props<{ taskTitle: Task['title'] }>(),
+    'Remove Task': props<{ taskId: Task['id'] }>(),
+    'Set task title': props<{
       taskId: Task['id'];
       taskTitle: Task['title'];
     }>(),
-    SetTaskIsDone: props<{
+    'Set task isDone': props<{
       taskId: Task['id'];
       value: Task['isDone'];
     }>(),
-    SetTaskIsActive: props<{ taskId: Task['id']; value: Task['isDone'] }>(),
-    ResetAllTasksIsActive: emptyProps(),
-    ResetAllTasksIsDone: emptyProps(),
-    ClearAllTasks: emptyProps(),
+    'Add Exmaple Data': emptyProps(),
+    'Set Task is Active': props<{
+      taskId: Task['id'];
+      value: Task['isDone'];
+    }>(),
+    'Reset all tasks is active': emptyProps(),
+    'Reset all tasks isDone': emptyProps(),
+    'Clear all tasks': emptyProps(),
   },
 });

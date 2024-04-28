@@ -1,19 +1,32 @@
 import { createReducer, on } from '@ngrx/store';
 
 import { TaskActions } from './tasks.actions';
-import { buildTask } from '../../functions';
+import { buildTask, compareTasksIsDone } from '../../functions';
 import { TasksState } from '../../interfaces/tasks/tasks.model';
 
 export const initialState: TasksState = {
-  tasks: [buildTask('Müll rausbringen')],
+  tasks: [],
 };
 
 export const tasksReducer = createReducer(
   initialState,
   on(TaskActions.addTask, (state, { taskTitle }) => {
     const newTask = buildTask(taskTitle);
-    state = { ...state, tasks: [...state.tasks, newTask] };
-    return state;
+    return {
+      ...state,
+      tasks: [...state.tasks, newTask],
+    };
+  }),
+  on(TaskActions.addExmapleData, (state) => {
+    return {
+      ...state,
+      tasks: [
+        buildTask('Müll rausbringen'),
+        buildTask('Küche putzen'),
+        buildTask('Buch lesen'),
+        buildTask('Auto putzen'),
+      ],
+    };
   }),
   on(TaskActions.removeTask, (state, { taskId }) => {
     const filteredTasks = state.tasks.filter((task) => task.id !== taskId);
@@ -38,12 +51,14 @@ export const tasksReducer = createReducer(
   on(TaskActions.setTaskIsDone, (state, { taskId, value }) => {
     return {
       ...state,
-      tasks: state.tasks.map((task) => {
-        if (task.id === taskId) {
-          return { ...task, isDone: value };
-        }
-        return task;
-      }),
+      tasks: state.tasks
+        .map((task) => {
+          if (task.id === taskId) {
+            return { ...task, isDone: value };
+          }
+          return task;
+        })
+        .sort(compareTasksIsDone),
     };
   }),
   on(TaskActions.setTaskIsActive, (state, { taskId, value }) => {

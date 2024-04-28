@@ -2,8 +2,8 @@
   <span class="app-name">Pomodoro</span>
   <nav>
     <ul>
-      @for (item of navigationItems; track item) { @if((timer.isActive ||
-      timer.isBreakActive) && item.path === 'einstellungen'){
+      @for (item of navigationItems; track item) { @if((countdown.running ||
+      countdown.isBreakActive) && item.path === 'einstellungen'){
       <li class="disabled">
         <a class="tooltip"
           >{{ item.title }}

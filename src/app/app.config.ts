@@ -10,17 +10,22 @@ import { countdownReducer } from './state/countdown/countdown.reducer';
 import { tasksReducer } from './state/tasks/tasks.reducer';
 import { logsReducer } from './state/logs/logs.reducer';
 import { configReducer } from './state/config/config.reducer';
+import { metaReducers } from './state';
+import { CountdownEffects } from './state/countdown/countdown.effects';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
-    provideStore({
-      config: configReducer,
-      countdown: countdownReducer,
-      logs: logsReducer,
-      tasks: tasksReducer,
-    }),
-    provideEffects(LogEffects),
+    provideStore(
+      {
+        config: configReducer,
+        countdown: countdownReducer,
+        logs: logsReducer,
+        tasks: tasksReducer,
+      },
+      { metaReducers: metaReducers }
+    ),
+    provideEffects(CountdownEffects, LogEffects),
     provideAnimationsAsync(),
   ],
 };

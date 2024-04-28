@@ -12,7 +12,7 @@ export const logsReducer = createReducer(
   on(LogsActions.addLog, (state, action) => {
     return { logs: [...state.logs, action.log] };
   }),
-  on(LogsActions.removeLogById, (state, action) => {
+  on(LogsActions.removeLogByID, (state, action) => {
     return { logs: [...state.logs.filter((log) => log.id !== action.logId)] };
   }),
   on(LogsActions.resetLogState, (_state, _action) => {

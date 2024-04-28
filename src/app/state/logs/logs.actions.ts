@@ -4,8 +4,9 @@ import { Log } from '../../interfaces/logs';
 export const LogsActions = createActionGroup({
   source: 'Logs',
   events: {
-    AddLog: props<{ log: Log }>(),
-    RemoveLogById: props<{ logId: Log['id'] }>(),
-    resetLogState: emptyProps(),
+    'Get Logs state': emptyProps(),
+    'Add Log': props<{ log: Log }>(),
+    'Remove Log by ID': props<{ logId: Log['id'] }>(),
+    'Reset Log state': emptyProps(),
   },
 });

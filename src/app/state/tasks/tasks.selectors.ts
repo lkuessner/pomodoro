@@ -3,20 +3,14 @@ import { Task } from '../../interfaces/tasks';
 import { compareTasksIsDone } from '../../functions';
 import { TasksState } from '../../interfaces/tasks/tasks.model';
 
-export const selectTasksStore = createFeatureSelector<TasksState>('timers');
+export const selectTasksStore = createFeatureSelector<TasksState>('tasks');
 
-export const selectTasks = createSelector(selectTasksStore, (state) => {
-  const sortedTasks = [...state.tasks];
-
-  sortedTasks.sort(compareTasksIsDone);
-  return {
-    ...state,
-    tasks: sortedTasks,
-  };
+export const selectTasksState = createSelector(selectTasksStore, (state) => {
+  return state;
 });
 
 export const selectTaskById = (taskId: Task['id']) =>
-  createSelector(selectTasks, (state) => {
+  createSelector(selectTasksState, (state) => {
     const task = state.tasks.find((task) => task.id === taskId);
     if (task) {
       return task;

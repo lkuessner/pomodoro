@@ -9,6 +9,7 @@
   border: 1px solid colors.$WHITE;
   border-radius: 6px;
   padding: 1rem;
+  overflow-y: scroll;
 
   .log {
     display: flex;
