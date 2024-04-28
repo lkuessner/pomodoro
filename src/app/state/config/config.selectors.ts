@@ -1,7 +1,7 @@
 import { createSelector, createFeatureSelector } from '@ngrx/store';
-import { Config } from '../../interfaces/config';
+import { ConfigState } from '../../interfaces/config';
 
-export const selectConfig = createFeatureSelector<Config>('config');
+export const selectConfig = createFeatureSelector<ConfigState>('config');
 
 export const selectConfigState = createSelector(selectConfig, (config) => {
   return config;

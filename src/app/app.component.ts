@@ -1,124 +1,171 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+// import {
+//   NavigationEnd,
+//   Router,
+//   RouterLink,
+//   RouterLinkActive,
+//   RouterOutlet,
+// } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { Observable, Subscription, filter } from 'rxjs';
+import { Store, select } from '@ngrx/store';
+import { AppState } from './interfaces/app/app.state';
+import { FormsModule } from '@angular/forms';
+
+import { CountdownService } from './services/CountdownService/countdown.service';
 import {
-  NavigationEnd,
   Router,
   RouterLink,
   RouterLinkActive,
+  RouterModule,
   RouterOutlet,
 } from '@angular/router';
-import { CommonModule } from '@angular/common';
-import { Subscription, filter } from 'rxjs';
-import { Timer } from './interfaces/timer';
-import { TabNavigationComponent } from './components/tab-navigation/tab-navigation.component';
-import { ConfigService, LogService, TimerService } from './services';
+import { LogsState } from './interfaces/logs/logs.model';
+import { CountdownState } from './interfaces/countdown/countdown.model';
+import { TasksState } from './interfaces/tasks/tasks.model';
+// import { Timer } from './interfaces/timer';
+// import { TabNavigationComponent } from './components/tab-navigation/tab-navigation.component';
+// import { ConfigService, LogService, TimerService } from './services';
 
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [
     CommonModule,
+    FormsModule,
     RouterOutlet,
+
     RouterLink,
     RouterLinkActive,
-    TabNavigationComponent,
+    CommonModule,
+    RouterModule,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })
-export class AppComponent implements OnInit, OnDestroy {
-  title = 'pomodoro';
-  logId: string = '';
-  timer!: Timer;
-  firstTaskId: string = '';
-  lastRouteIsActive: boolean = false;
-  isBreakActive: boolean = false;
-  allTasksDone: boolean = false;
-  private routerEventsSubscription: Subscription | undefined;
+export class AppComponent {
+  countdown$: Observable<CountdownState>;
+  tasks$: Observable<TasksState>;
+  logs$: Observable<LogsState>;
+  startValue: number = 60; // Default Startwert
 
   constructor(
-    private router: Router,
-    private configService: ConfigService,
-    private timerService: TimerService,
-    private logService: LogService
-  ) {}
-
-  ngOnInit(): void {
-    this.routerEventsSubscription = this.router.events
-      .pipe(filter((event) => event instanceof NavigationEnd))
-      .subscribe(() => {
-        let lastRouteIndex =
-          this.router.config.filter((route) => route.path !== '**').length - 1;
-
-        this.lastRouteIsActive = this.router.isActive(
-          this.router.config[lastRouteIndex].path!,
-          true
-        );
-      });
-    this.timerService.getTimer().subscribe((timerState) => {
-      this.timer = timerState;
-
-      this.allTasksDone = !timerState.tasks
-        .map((task) => task.isDone)
-        .includes(false);
-    });
+    private store: Store<AppState>,
+    private countdownService: CountdownService
+  ) {
+    this.countdown$ = this.store.pipe(select('countdown'));
+    this.tasks$ = this.store.pipe(select('tasks'));
+    this.logs$ = this.store.pipe(select('logs'));
   }
 
-  ngOnDestroy(): void {
-    if (this.routerEventsSubscription) {
-      this.routerEventsSubscription.unsubscribe();
-    }
+  start() {
+    this.countdownService.startCountdown();
   }
 
-  /** TimerService Methods */
-  toggleTimerIsActive() {
-    return this.timerService.toggleTimerIsActive();
+  stop() {
+    this.countdownService.stopCountdown();
   }
 
-  toggleTimerIsExpired() {
-    return this.timerService.toggleTimerIsExpired();
+  reset() {
+    this.countdownService.resetCountdown();
   }
 
-  addTask() {
-    return this.timerService.addTask('Beispiel Task Titel');
+  setStartValue() {
+    this.countdownService.setCountdownStartValue(this.startValue);
   }
+  // title = 'pomodoro';
+  // logId: string = '';
+  // timer!: Timer;
+  // firstTaskId: string = '';
+  // lastRouteIsActive: boolean = false;
+  // isBreakActive: boolean = false;
+  // allTasksDone: boolean = false;
+  // private routerEventsSubscription: Subscription | undefined;
 
-  removeTask() {
-    return this.timerService.removeTask(this.firstTaskId);
-  }
+  // constructor(
+  //   private router: Router,
+  //   private configService: ConfigService,
+  //   private timerService: TimerService,
+  //   private logService: LogService
+  // ) {}
 
-  setTaskTitle() {
-    return this.timerService.setTaskTitle(
-      this.firstTaskId,
-      'Changed Task title'
-    );
-  }
+  // ngOnInit(): void {
+  //   this.routerEventsSubscription = this.router.events
+  //     .pipe(filter((event) => event instanceof NavigationEnd))
+  //     .subscribe(() => {
+  //       let lastRouteIndex =
+  //         this.router.config.filter((route) => route.path !== '**').length - 1;
 
-  setTaskDone() {
-    return this.timerService.toggleTaskIsDone(this.firstTaskId);
-  }
+  //       this.lastRouteIsActive = this.router.isActive(
+  //         this.router.config[lastRouteIndex].path!,
+  //         true
+  //       );
+  //     });
+  //   this.timerService.getTimer().subscribe((timerState) => {
+  //     this.timer = timerState;
 
-  /** LogService Methods */
-  getLogState() {
-    return this.logService.getLogState();
-  }
+  //     this.allTasksDone = !timerState.tasks
+  //       .map((task) => task.isDone)
+  //       .includes(false);
+  //   });
+  // }
 
-  resetLogState() {
-    this.logService.resetLogState();
-  }
-  removeLogById() {
-    this.logService.removeLogById(this.logId);
-  }
+  // ngOnDestroy(): void {
+  //   if (this.routerEventsSubscription) {
+  //     this.routerEventsSubscription.unsubscribe();
+  //   }
+  // }
 
-  /** ConfigService Methods */
-  getConfig() {
-    return this.configService.getConfigState();
-  }
+  // /** TimerService Methods */
+  // toggleTimerIsActive() {
+  //   return this.timerService.toggleTimerIsActive();
+  // }
 
-  getTaskDuration() {
-    return this.configService.getTaskDuration();
-  }
+  // toggleTimerIsExpired() {
+  //   return this.timerService.toggleTimerIsExpired();
+  // }
 
-  getBreakDuration() {
-    return this.configService.getBreakDuration();
-  }
+  // addTask() {
+  //   return this.timerService.addTask('Beispiel Task Titel');
+  // }
+
+  // removeTask() {
+  //   return this.timerService.removeTask(this.firstTaskId);
+  // }
+
+  // setTaskTitle() {
+  //   return this.timerService.setTaskTitle(
+  //     this.firstTaskId,
+  //     'Changed Task title'
+  //   );
+  // }
+
+  // setTaskDone() {
+  //   return this.timerService.toggleTaskIsDone(this.firstTaskId);
+  // }
+
+  // /** LogService Methods */
+  // getLogState() {
+  //   return this.logService.getLogState();
+  // }
+
+  // resetLogState() {
+  //   this.logService.resetLogState();
+  // }
+  // removeLogById() {
+  //   this.logService.removeLogById(this.logId);
+  // }
+
+  // /** ConfigService Methods */
+  // getConfig() {
+  //   return this.configService.getConfigState();
+  // }
+
+  // getTaskDuration() {
+  //   return this.configService.getTaskDuration();
+  // }
+
+  // getBreakDuration() {
+  //   return this.configService.getBreakDuration();
+  // }
 }

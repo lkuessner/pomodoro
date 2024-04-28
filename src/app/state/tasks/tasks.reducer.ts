@@ -1,47 +1,15 @@
 import { createReducer, on } from '@ngrx/store';
 
-import { TaskActions, TimerActions } from './timer.actions';
-import { Timer, TimerStoreStateType } from '../../interfaces/timer';
-import { Task } from '../../interfaces/task';
-import { v4 as uuidv4 } from 'uuid';
+import { TaskActions } from './tasks.actions';
+import { buildTask } from '../../functions';
+import { TasksState } from '../../interfaces/tasks/tasks.model';
 
-const buildTask = (taskTitle: Task['title']): Task => {
-  return {
-    id: uuidv4(),
-    isDone: false,
-    isActive: false,
-    title: taskTitle,
-  };
+export const initialState: TasksState = {
+  tasks: [buildTask('Müll rausbringen')],
 };
 
-const defaultTimerObject: Timer = {
-  id: uuidv4(),
-  tasks: [
-    buildTask('Müll rausbringen'),
-    buildTask('Küche putzen'),
-    buildTask('Sport machen'),
-  ],
-  isBreakActive: false,
-  isActive: false,
-  isExpired: false,
-};
-
-export const initialState: TimerStoreStateType = defaultTimerObject;
-
-export const timerReducer = createReducer(
+export const tasksReducer = createReducer(
   initialState,
-  on(TimerActions.toggleTimerIsActive, (state) => {
-    state = { ...state, isActive: !state.isActive };
-    return state;
-  }),
-  on(TimerActions.toggleTimerIsBreakActive, (state) => {
-    state = { ...state, isBreakActive: !state.isBreakActive };
-    return state;
-  }),
-  on(TimerActions.toggleTimerIsExpired, (state) => {
-    state = { ...state, isExpired: !state.isExpired };
-    return state;
-  }),
   on(TaskActions.addTask, (state, { taskTitle }) => {
     const newTask = buildTask(taskTitle);
     state = { ...state, tasks: [...state.tasks, newTask] };
@@ -67,23 +35,23 @@ export const timerReducer = createReducer(
       throw new Error(`No task found with taskId ${taskId} to set title.`);
     }
   }),
-  on(TaskActions.toggleTaskIsDone, (state, { taskId }) => {
+  on(TaskActions.setTaskIsDone, (state, { taskId, value }) => {
     return {
       ...state,
       tasks: state.tasks.map((task) => {
         if (task.id === taskId) {
-          return { ...task, isDone: !task.isDone };
+          return { ...task, isDone: value };
         }
         return task;
       }),
     };
   }),
-  on(TaskActions.toggleTaskIsActive, (state, { taskId }) => {
+  on(TaskActions.setTaskIsActive, (state, { taskId, value }) => {
     return {
       ...state,
       tasks: state.tasks.map((task) => {
         if (task.id === taskId) {
-          return { ...task, isActive: !task.isActive };
+          return { ...task, isActive: value };
         }
         return task;
       }),

@@ -3,6 +3,7 @@ import { EinstellungenComponent } from './components/einstellungen/einstellungen
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
 import { TimerComponent } from './components/timer/timer.component';
 import { LogComponent } from './components/log/log.component';
+import { TestComponent } from './components/test/test.component';
 
 export const routes: Routes = [
   {
@@ -11,14 +12,19 @@ export const routes: Routes = [
     component: TimerComponent,
   },
   {
-    title: 'Einstellungen',
-    path: 'einstellungen',
-    component: EinstellungenComponent,
+    path: 'test',
+    title: 'Test',
+    component: TestComponent,
   },
-  {
-    title: 'Ereignisse',
-    path: 'log',
-    component: LogComponent,
-  },
+  // {
+  //   title: 'Einstellungen',
+  //   path: 'einstellungen',
+  //   component: EinstellungenComponent,
+  // },
+  // {
+  //   title: 'Ereignisse',
+  //   path: 'log',
+  //   component: LogComponent,
+  // },
   { path: '**', component: PageNotFoundComponent },
 ];

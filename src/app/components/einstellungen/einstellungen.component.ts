@@ -1,5 +1,4 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ConfigService } from '../../services';
 import {
   FormControl,
   FormGroupDirective,
@@ -16,6 +15,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { minutesToSeconds, secondsToMinutes } from '../../functions';
 import { Subscription, take } from 'rxjs';
 import { MatButton } from '@angular/material/button';
+import { CountdownService } from '../../services/CountdownService/countdown.service';
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(
     control: FormControl | null,
@@ -52,30 +52,19 @@ export class EinstellungenComponent implements OnInit, OnDestroy {
   getConfigStateSub!: Subscription;
   matcher = new MyErrorStateMatcher();
   constructor(
-    private configService: ConfigService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private countdownService: CountdownService
   ) {}
 
-  ngOnInit() {
-    this.getConfigStateSub = this.configService
-      .getConfigState()
-      .pipe(take(1))
-      .subscribe((state) => {
-        this.formGroup.setValue({
-          taskDuration: secondsToMinutes(state.taskDuration),
-          breakDuration: secondsToMinutes(state.breakDuration),
-        });
-      });
-  }
+  ngOnInit() {}
 
   ngOnDestroy(): void {
     this.getConfigStateSub.unsubscribe();
   }
 
   onSubmit() {
-    this.configService.updateConfigState({
-      taskDuration: minutesToSeconds(this.formGroup.value['taskDuration']),
-      breakDuration: minutesToSeconds(this.formGroup.value['breakDuration']),
-    });
+    this.countdownService.setCountdownBreakValue(
+      minutesToSeconds(this.formGroup.value['breakDuration'])
+    );
   }
 }

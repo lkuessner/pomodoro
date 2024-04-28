@@ -1,3 +1,6 @@
+import { v4 } from 'uuid';
+import { Task } from '../interfaces/tasks';
+
 export { isObservable } from './type.guards';
 export function format(time: number) {
   // Hours, minutes and seconds
@@ -37,4 +40,23 @@ export function formatDate(date: Date) {
   // Formatieren des Timestamps im Format HH:MM:SS
   const formattedTime = hours + ':' + minutes + ':' + seconds;
   return formattedTime;
+}
+
+export function buildTask(title: Task['title']): Task {
+  return {
+    id: v4(),
+    isDone: false,
+    isActive: false,
+    title: title,
+  };
+}
+
+export function compareTasksIsDone(a: Task, b: Task) {
+  if (a.isDone === b.isDone) {
+    return 0;
+  } else if (a.isDone) {
+    return 1;
+  } else {
+    return -1;
+  }
 }

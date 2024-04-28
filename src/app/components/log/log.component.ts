@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { LogService } from '../../services';
 import { CommonModule } from '@angular/common';
 import { formatDate } from '../../functions';
+import { AppState } from '../../interfaces/app/app.state';
+import { Store } from '@ngrx/store';
 
 @Component({
   selector: 'app-log',
@@ -11,20 +12,20 @@ import { formatDate } from '../../functions';
   styleUrl: './log.component.scss',
 })
 export class LogComponent implements OnInit {
-  logArray: Array<any> = [];
+  logs: Array<any> = [];
 
-  constructor(private logService: LogService) {}
-  ngOnInit(): void {
-    this.logService.getLogState().subscribe((logState) => {
-      logState
+  constructor(private store: Store<AppState>) {}
+
+  ngOnInit() {
+    this.store.select('logs').subscribe((logsState) => {
+      logsState.logs
         .filter((log) => log.type !== '@ngrx/effects/init')
         .forEach((log) => {
-          this.logArray.push({
+          this.logs.push({
             date: formatDate(new Date(log.timestamp)),
             title: log.type,
           });
         });
-      console.log(this.logArray);
     });
   }
 }

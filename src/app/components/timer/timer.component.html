@@ -1,4 +1,14 @@
-<div class="container">
+<div>timer works</div>
+<div>{{ countdown$ | async | json }}</div>
+<div>{{ tasks$ | async | json }}</div>
+<div>{{ logs$ | async | json }}</div>
+<a
+  routerLinkActive
+  [routerLinkActiveOptions]="{ exact: true }"
+  routerLink="test"
+  >to test page</a
+>
+<!-- <div class="container">
   <div class="timerContainer">
     <h2 class="timerStatus">
       <div *ngIf="allTasksDone">
@@ -155,4 +165,4 @@
     </mat-card>
     }
   </div>
-</div>
+</div> -->

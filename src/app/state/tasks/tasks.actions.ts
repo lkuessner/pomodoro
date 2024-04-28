@@ -1,17 +1,5 @@
 import { createActionGroup, emptyProps, props } from '@ngrx/store';
-import { Task } from '../../interfaces/task';
-
-export const TimerActions = createActionGroup({
-  source: 'Timer',
-  events: {
-    AddTimer: emptyProps(),
-    SetTimerDuration: props<{ duration: number }>(),
-    ToggleTimerIsBreakActive: emptyProps(),
-    ToggleTimerIsActive: emptyProps(),
-    ToggleTimerIsExpired: emptyProps(),
-    ResetTimerState: emptyProps(),
-  },
-});
+import { Task } from '../../interfaces/tasks';
 
 export const TaskActions = createActionGroup({
   source: 'Task',
@@ -22,10 +10,11 @@ export const TaskActions = createActionGroup({
       taskId: Task['id'];
       taskTitle: Task['title'];
     }>(),
-    ToggleTaskIsDone: props<{
+    SetTaskIsDone: props<{
       taskId: Task['id'];
+      value: Task['isDone'];
     }>(),
-    ToggleTaskIsActive: props<{ taskId: Task['id'] }>(),
+    SetTaskIsActive: props<{ taskId: Task['id']; value: Task['isDone'] }>(),
     ResetAllTasksIsActive: emptyProps(),
     ResetAllTasksIsDone: emptyProps(),
     ClearAllTasks: emptyProps(),
