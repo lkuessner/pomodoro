@@ -65,8 +65,8 @@ export class EinstellungenComponent {
       .getCountdownState()
       .subscribe((state) => {
         this.formGroup.setValue({
-          startValue: secondsToMinutes(state.startValue),
-          breakStartValue: secondsToMinutes(state.breakStartValue),
+          startValue: state.startValue,
+          breakStartValue: state.breakStartValue,
         });
         this.countdown = state;
       });

@@ -73,6 +73,11 @@
           list-style: none;
           font-size: 14px;
 
+          .attentionAnimation {
+            border-top-left-radius: sizes.$TAB_BORDER_RADIUS;
+            border-top-right-radius: sizes.$TAB_BORDER_RADIUS;
+            animation: pulse 2s 3 ease-in-out;
+          }
           a {
             display: flex;
             align-items: center;
@@ -102,5 +107,19 @@
         }
       }
     }
+  }
+}
+
+@keyframes pulse {
+  0% {
+    background-color: colors.$HRM_PRIMARY_COLOR;
+  }
+
+  70% {
+    background-color: colors.$PULSE_BACKGROUND;
+  }
+
+  100% {
+    background-color: colors.$HRM_PRIMARY_COLOR;
   }
 }

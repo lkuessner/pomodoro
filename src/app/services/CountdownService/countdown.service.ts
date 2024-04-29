@@ -5,7 +5,6 @@ import { AppState } from '../../interfaces/app/app.state';
 import { ICountdownService } from '../../interfaces/countdown';
 import { CountdownActions } from '../../state/countdown/countdown.actions';
 import { selectCountdownState } from '../../state/countdown/countdown.selectors';
-import { TaskActions } from '../../state/tasks/tasks.actions';
 
 @Injectable({
   providedIn: 'root',
@@ -14,15 +13,19 @@ export class CountdownService implements ICountdownService {
   private countdown: number | undefined;
   constructor(private store: Store<AppState>) {}
 
+  returnInterval() {
+    return setInterval(() => {
+      this.store.dispatch(CountdownActions.decrementCountdown());
+    }, 1000);
+  }
+
   getCountdownState() {
     return this.store.select(selectCountdownState);
   }
 
   startCountdown() {
     this.store.dispatch(CountdownActions.startCountdown());
-    this.countdown = setInterval(() => {
-      this.store.dispatch(CountdownActions.decrementCountdown());
-    }, 1000);
+    this.countdown = this.returnInterval();
   }
 
   stopCountdown() {
@@ -31,20 +34,18 @@ export class CountdownService implements ICountdownService {
   }
 
   setCountdownRunning() {
-    this.store.dispatch(CountdownActions.stopCountdown());
+    if (this.countdown === undefined) {
+      this.countdown = this.returnInterval();
+    }
   }
 
   resetCountdown() {
     clearInterval(this.countdown);
-    this.store.dispatch(CountdownActions.setBreak({ isBreakActive: false }));
     this.store.dispatch(CountdownActions.resetCountdown());
-    this.store.dispatch(
-      CountdownActions.setCountdownExpired({ expired: false })
-    );
   }
 
   setCountdownBreak(isBreakActive: boolean) {
-    this.store.dispatch(CountdownActions.setBreak({ isBreakActive }));
+    this.store.dispatch(CountdownActions.setBreakIsActive({ isBreakActive }));
   }
 
   setCountdownStartValue(startValue: number) {

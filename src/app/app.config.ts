@@ -1,4 +1,4 @@
-import { ApplicationConfig } from '@angular/core';
+import { ApplicationConfig, isDevMode } from '@angular/core';
 import { provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
@@ -12,6 +12,7 @@ import { logsReducer } from './state/logs/logs.reducer';
 import { configReducer } from './state/config/config.reducer';
 import { metaReducers } from './state';
 import { CountdownEffects } from './state/countdown/countdown.effects';
+import { provideStoreDevtools } from '@ngrx/store-devtools';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -25,6 +26,10 @@ export const appConfig: ApplicationConfig = {
       },
       { metaReducers: metaReducers }
     ),
+    provideStoreDevtools({
+      connectInZone: true,
+      logOnly: isDevMode(),
+    }),
     provideEffects(CountdownEffects, LogEffects),
     provideAnimationsAsync(),
   ],

@@ -1,8 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Observable, Subscription, filter } from 'rxjs';
-import { Store, select } from '@ngrx/store';
-import { AppState } from './interfaces/app/app.state';
+import { Subscription, filter } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import { CountdownService } from './services/CountdownService/countdown.service';
 import {
@@ -13,11 +11,9 @@ import {
   RouterModule,
   RouterOutlet,
 } from '@angular/router';
-import { LogsState } from './interfaces/logs/logs.model';
 import { CountdownState } from './interfaces/countdown/countdown.model';
-import { TasksState } from './interfaces/tasks/tasks.model';
 import { TabNavigationComponent } from './components/tab-navigation/tab-navigation.component';
-import { LogsService, TasksService } from './services';
+import { TasksService } from './services';
 
 @Component({
   selector: 'app-root',
@@ -35,11 +31,14 @@ import { LogsService, TasksService } from './services';
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnDestroy, OnInit {
   countdown!: CountdownState;
   countdownSubscription$: Subscription;
+  routerSubscription$: Subscription;
   isLastRouteActive: boolean = false;
+  fireAnimation: boolean = false;
   allTasksDone: boolean = false;
+
   constructor(
     private router: Router,
     private countdownService: CountdownService,
@@ -52,13 +51,11 @@ export class AppComponent implements OnInit {
       });
     this.tasksService.getTasksState().subscribe((state) => {
       this.allTasksDone =
-        state.tasks.length > 1 &&
+        state.tasks.length >= 1 &&
         !state.tasks.map((task) => task.isDone).includes(false);
     });
-  }
 
-  ngOnInit(): void {
-    this.router.events
+    this.routerSubscription$ = this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe(() => {
         let lastRouteIndex =
@@ -69,5 +66,32 @@ export class AppComponent implements OnInit {
           true
         );
       });
+
+    const countdownValueIsStartOrBreakStartValue =
+      this.countdown.value === this.countdown.breakStartValue ||
+      this.countdown.value === this.countdown.startValue;
+    const countdownIsNotRunning = !this.countdown.running;
+    const breakIsActive = this.countdown.isBreakActive;
+    const countdownIsExpired = this.countdown.expired;
+
+    const isAnimationTriggered =
+      (countdownValueIsStartOrBreakStartValue &&
+        breakIsActive &&
+        countdownIsNotRunning) ||
+      (countdownValueIsStartOrBreakStartValue &&
+        countdownIsExpired &&
+        countdownIsNotRunning);
+    this.fireAnimation = isAnimationTriggered;
+  }
+
+  ngOnInit(): void {
+    if (this.countdown.running) {
+      this.countdownService.setCountdownRunning();
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.countdownSubscription$.unsubscribe();
+    this.routerSubscription$.unsubscribe();
   }
 }

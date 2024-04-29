@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -8,32 +8,16 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconButtonSizesModule } from 'mat-icon-button-sizes';
-import {
-  NEVER,
-  Observable,
-  Subject,
-  Subscription,
-  interval,
-  scan,
-  startWith,
-  switchMap,
-  takeUntil,
-} from 'rxjs';
+import { Subscription } from 'rxjs';
 import { AddEditTaskDialogComponent } from './AddEditTaskDialog/addEditTaskDialog.component';
 import { ConfirmDialog } from './ConfirmDialog/confirmDialog.component';
 import { Task } from '../../interfaces/tasks';
-import {
-  Router,
-  RouterLink,
-  RouterLinkActive,
-  RouterModule,
-} from '@angular/router';
+import { RouterLink, RouterLinkActive, RouterModule } from '@angular/router';
 import { CountdownService } from '../../services/CountdownService/countdown.service';
-import { Store, select } from '@ngrx/store';
-import { TasksState } from '../../interfaces/tasks/tasks.model';
-import { CountdownState } from '../../interfaces/countdown/countdown.model';
+import { TasksState } from '../../interfaces/tasks';
+import { CountdownState } from '../../interfaces/countdown';
 import { TasksService } from '../../services';
-import { compareTasksIsDone, format } from '../../functions';
+import { format } from '../../functions';
 
 @Component({
   selector: 'app-timer',
@@ -76,9 +60,7 @@ export class TimerComponent {
       .getTasksState()
       .subscribe((state) => {
         this.tasks = state;
-
         this.tasksArray = state.tasks;
-
         this.allTasksDone = !state.tasks
           .map((task) => task.isDone)
           .includes(false);
@@ -90,17 +72,16 @@ export class TimerComponent {
   }
 
   startCountdown() {
-    this.countdownService.setCountdownExpired(false);
     this.countdownService.startCountdown();
   }
 
   stopCountdown() {
-    this.countdownService.setCountdownExpired(true);
     this.countdownService.stopCountdown();
   }
 
   resetCountdownAndTasks() {
     this.countdownService.resetCountdown();
+    this.countdownService.setCountdownBreak(false);
     this.tasksService.resetAllTasksIsDone();
   }
 
@@ -110,6 +91,14 @@ export class TimerComponent {
 
   addExampleTasks() {
     this.tasksService.addExmapleData();
+  }
+
+  toggleTaskIsDone(taskId: string, taskIsDoneValue: boolean) {
+    this.tasksService.setTaskIsDone(taskId, !taskIsDoneValue);
+  }
+
+  resetCurrentTimer() {
+    this.countdownService.resetCountdown();
   }
 
   clearAllTasks() {
@@ -123,14 +112,6 @@ export class TimerComponent {
         this.tasksService.clearAllTasks();
       }
     });
-  }
-
-  toggleTaskIsDone(taskId: string, taskIsDoneValue: boolean) {
-    this.tasksService.setTaskIsDone(taskId, !taskIsDoneValue);
-  }
-
-  resetCurrentTimer() {
-    this.countdownService.resetCountdown();
   }
 
   deleteTaskDialog(taskId: string) {
