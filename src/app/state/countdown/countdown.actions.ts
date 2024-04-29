@@ -14,7 +14,9 @@ export const CountdownActions = createActionGroup({
     'Set break start value': props<{
       breakStartValue: CountdownState['breakStartValue'];
     }>(),
-    'Set break': props<{ isBreakActive: CountdownState['isBreakActive'] }>(),
+    'Set break is active': props<{
+      isBreakActive: CountdownState['isBreakActive'];
+    }>(),
     'Set Countdown expired': props<{ expired: CountdownState['expired'] }>(),
   },
 });

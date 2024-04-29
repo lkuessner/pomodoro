@@ -70,31 +70,16 @@
         extended
         class="action-button"
         (click)="resetCountdownAndTasks()"
-        [ngClass]="{ actionButtonDisabled: countdown.running }"
+        [ngClass]="{
+          actionButtonDisabled: countdown.running || tasksArray.length === 0
+        }"
         [disabled]="countdown.running"
         title="Wecker zurücksetzen"
       >
-        <mat-icon>history</mat-icon>
+        <mat-icon>restart_alt</mat-icon>
         Wecker
       </button>
 
-      @if(countdown.isBreakActive){
-      <button
-        mat-fab
-        extended
-        class="action-button"
-        [ngClass]="{
-          actionButtonDisabled: countdown.running || countdown.expired
-        }"
-        (click)="resetCurrentTimer()"
-        [disabled]="countdown.running || countdown.expired"
-        title="Aufgabe zurücksetzen"
-      >
-        <mat-icon>skip_next</mat-icon>
-        <div>Skip</div>
-      </button>
-
-      }@else {
       <button
         mat-fab
         extended
@@ -104,13 +89,14 @@
             countdown.running || countdown.value === countdown.startValue
         }"
         (click)="resetCurrentTimer()"
-        [disabled]="countdown.running"
-        title="Aufgabe zurücksetzen"
+        [disabled]="
+          countdown.running || countdown.value === countdown.startValue
+        "
+        title="Zeit zurücksetzen"
       >
-        <mat-icon>restart_alt</mat-icon>
+        <mat-icon>history</mat-icon>
         <div>Zeit</div>
       </button>
-      }
     </div>
   </div>
 

@@ -8,11 +8,12 @@
   height: 500px;
   border: 1px solid colors.$WHITE;
   border-radius: 6px;
-  padding: 1rem;
+  padding: 0.5rem 1rem;
   overflow-y: scroll;
+  background: colors.$WHITE;
 
   .log {
     display: flex;
-    color: colors.$WHITE;
+    color: colors.$BLACK;
   }
 }

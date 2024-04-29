@@ -2,8 +2,8 @@
   <span class="app-name">Pomodoro</span>
   <nav>
     <ul>
-      @for (item of navigationItems; track item) { @if((countdown.running ||
-      countdown.isBreakActive) && item.path === 'einstellungen'){
+      @for (item of navigationItems; track item) { @if(countdown.running &&
+      item.path === 'einstellungen'){
       <li class="disabled">
         <a class="tooltip"
           >{{ item.title }}
@@ -16,7 +16,10 @@
           #rla="routerLinkActive"
           routerLinkActive
           [routerLinkActiveOptions]="{ exact: true }"
-          [ngClass]="{ activeAnchor: rla.isActive }"
+          [ngClass]="{
+            activeAnchor: rla.isActive,
+            attentionAnimation: countdown.expired && item.path === ''
+          }"
           routerLink="{{ item.path }}"
           ariaCurrentWhenActive="page"
           >{{ item.title }}

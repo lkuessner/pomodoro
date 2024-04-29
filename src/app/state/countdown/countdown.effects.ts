@@ -29,7 +29,6 @@ export class CountdownEffects {
 
           let countdownIsExpired: boolean = countdown.value <= 0;
           if (countdownIsExpired) {
-            this.countdownService.setCountdownExpired(false);
             if (countdown.isBreakActive) {
               this.countdownService.stopCountdown();
               this.countdownService.setCountdownBreak(false);
@@ -41,8 +40,6 @@ export class CountdownEffects {
                 countdown.breakStartValue
               );
             }
-          } else {
-            this.countdownService.setCountdownExpired(true);
           }
 
           return state;
@@ -60,6 +57,7 @@ export class CountdownEffects {
           this.store.select(selectCountdownState)
         ),
         mergeMap((state) => {
+          this.countdownService.setCountdownExpired(false);
           return state;
         })
       ),
@@ -76,10 +74,33 @@ export class CountdownEffects {
         ),
         mergeMap((state) => {
           const [_, tasks, countdown] = state;
-          if (countdown.value === 0 && !countdown.isBreakActive) {
-            this.tasksService.setTaskIsDone(tasks.tasks[0].id, true);
+          const countdownValueIsZero = countdown.value === 0;
+          const currentTask = tasks.tasks[0];
+          if (
+            (countdownValueIsZero && !countdown.isBreakActive) ||
+            (countdownValueIsZero && countdown.isBreakActive)
+          ) {
+            this.countdownService.setCountdownExpired(true);
+            this.tasksService.setTaskIsDone(currentTask.id, true);
           }
 
+          return state;
+        })
+      ),
+    { dispatch: false }
+  );
+
+  resetCountdownActions$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(CountdownActions.resetCountdown),
+        withLatestFrom(this.store.select(selectCountdownState)),
+        mergeMap((state) => {
+          if (state[1].expired) {
+            this.store.dispatch(
+              CountdownActions.setCountdownExpired({ expired: false })
+            );
+          }
           return state;
         })
       ),

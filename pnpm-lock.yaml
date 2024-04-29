@@ -41,6 +41,9 @@ dependencies:
   '@ngrx/store':
     specifier: ^17.2.0
     version: 17.2.0(@angular/core@17.3.5)(rxjs@7.8.1)
+  '@ngrx/store-devtools':
+    specifier: ^17.2.0
+    version: 17.2.0(@ngrx/store@17.2.0)(rxjs@7.8.1)
   mat-icon-button-sizes:
     specifier: ^1.0.6
     version: 1.0.6(@angular/animations@17.3.5)(@angular/common@17.3.5)(@angular/core@17.3.5)(@angular/material@17.3.6)
@@ -2985,6 +2988,17 @@ packages:
     peerDependencies:
       rxjs: ^6.5.3 || ^7.4.0
     dependencies:
+      rxjs: 7.8.1
+      tslib: 2.6.2
+    dev: false
+
+  /@ngrx/store-devtools@17.2.0(@ngrx/store@17.2.0)(rxjs@7.8.1):
+    resolution: {integrity: sha512-ig0qr6hMexZGnrlxfHvZmu5CanRjH7hhx60XUbB5BdBvWJIIRaWKPLcsniiDUhljAD87gvzrrilbCTiML38+CA==}
+    peerDependencies:
+      '@ngrx/store': 17.2.0
+      rxjs: ^6.5.3 || ^7.5.0
+    dependencies:
+      '@ngrx/store': 17.2.0(@angular/core@17.3.5)(rxjs@7.8.1)
       rxjs: 7.8.1
       tslib: 2.6.2
     dev: false

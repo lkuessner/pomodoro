@@ -1,12 +1,11 @@
 import { createReducer, on } from '@ngrx/store';
 import { CountdownActions } from './countdown.actions';
 import { CountdownState } from '../../interfaces/countdown';
-import { Task } from '../../interfaces/tasks';
 
 export const initialState: CountdownState = {
-  value: 5,
-  startValue: 5,
-  breakStartValue: 3,
+  value: 25,
+  startValue: 25,
+  breakStartValue: 5,
   running: false,
   isBreakActive: false,
   expired: false,
@@ -18,7 +17,7 @@ export const countdownReducer = createReducer(
   on(CountdownActions.stopCountdown, (state) => ({ ...state, running: false })),
   on(CountdownActions.resetCountdown, (state) => ({
     ...state,
-    value: state.startValue,
+    value: state.isBreakActive ? state.breakStartValue : state.startValue,
   })),
   on(CountdownActions.decrementCountdown, (state) => ({
     ...state,
@@ -36,7 +35,7 @@ export const countdownReducer = createReducer(
     ...state,
     expired,
   })),
-  on(CountdownActions.setBreak, (state, { isBreakActive }) => ({
+  on(CountdownActions.setBreakIsActive, (state, { isBreakActive }) => ({
     ...state,
     isBreakActive,
   })),
