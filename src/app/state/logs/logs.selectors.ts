@@ -1,4 +1,4 @@
-import { createSelector, createFeatureSelector } from '@ngrx/store';
+import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { LogsState } from '../../interfaces/logs';
 
 export const selectLogs = createFeatureSelector<LogsState>('logs');

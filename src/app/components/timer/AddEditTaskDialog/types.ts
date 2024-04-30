@@ -1,4 +1,4 @@
 export interface AddEditDialogData {
   dialogTaskTitle: string;
-  propmpt?: string;
+  prompt?: string;
 }

@@ -1,7 +1,7 @@
 import { createActionGroup, emptyProps, props } from '@ngrx/store';
-import { Task } from '../../interfaces/tasks';
+import { Task, TasksState } from '../../interfaces/tasks';
 
-export const TaskActions = createActionGroup({
+export const TasksActions = createActionGroup({
   source: 'Task',
   events: {
     'Add Task': props<{ taskTitle: Task['title'] }>(),
@@ -9,6 +9,9 @@ export const TaskActions = createActionGroup({
     'Set task title': props<{
       taskId: Task['id'];
       taskTitle: Task['title'];
+    }>(),
+    'Set is all tasks done': props<{
+      isAllTasksDone: TasksState['isAllTasksDone'];
     }>(),
     'Set task isDone': props<{
       taskId: Task['id'];

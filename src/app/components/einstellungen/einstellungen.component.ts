@@ -1,22 +1,23 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import {
-  FormControl,
-  FormGroupDirective,
-  NgForm,
-  Validators,
-  FormsModule,
-  ReactiveFormsModule,
-  FormGroup,
   FormBuilder,
+  FormControl,
+  FormGroup,
+  FormGroupDirective,
+  FormsModule,
+  NgForm,
+  ReactiveFormsModule,
+  Validators,
 } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 import { ErrorStateMatcher } from '@angular/material/core';
-import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { minutesToSeconds, secondsToMinutes } from '../../functions';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatIconButtonSizesModule } from 'mat-icon-button-sizes';
 import { Subscription } from 'rxjs';
-import { MatButton } from '@angular/material/button';
-import { CountdownService } from '../../services/CountdownService/countdown.service';
-import { CountdownState } from '../../interfaces/countdown';
+import { minutesToSeconds, secondsToMinutes } from '../../functions';
+import { CountdownService } from '../../services/CountdownService';
 export class SettingsErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(
     control: FormControl | null,
@@ -31,6 +32,12 @@ export class SettingsErrorStateMatcher implements ErrorStateMatcher {
   }
 }
 
+const formFieldValidators = [
+  Validators.required,
+  Validators.min(0.1),
+  Validators.pattern(/^\d*[.,]?\d{0,1}$/),
+];
+
 interface SettingsForm {
   startValue: FormControl<number | null>;
   breakStartValue: FormControl<number | null>;
@@ -43,18 +50,19 @@ interface SettingsForm {
     FormsModule,
     MatFormFieldModule,
     MatInputModule,
-    MatButton,
+    MatButtonModule,
     ReactiveFormsModule,
+    MatIconModule,
+    MatIconButtonSizesModule,
   ],
   templateUrl: './einstellungen.component.html',
   styleUrl: './einstellungen.component.scss',
 })
-export class EinstellungenComponent {
-  countdown!: CountdownState;
+export class EinstellungenComponent implements OnDestroy {
   countdownSubscription$: Subscription;
   formGroup: FormGroup<SettingsForm> = this.formBuilder.group({
-    startValue: new FormControl(0, [Validators.required]),
-    breakStartValue: new FormControl(0, [Validators.required]),
+    startValue: new FormControl(0, formFieldValidators),
+    breakStartValue: new FormControl(0, formFieldValidators),
   });
   matcher = new SettingsErrorStateMatcher();
   constructor(
@@ -65,29 +73,45 @@ export class EinstellungenComponent {
       .getCountdownState()
       .subscribe((state) => {
         this.formGroup.setValue({
-          startValue: state.startValue,
-          breakStartValue: state.breakStartValue,
+          startValue: Number(secondsToMinutes(state.startValue).toFixed(1)),
+          breakStartValue: Number(
+            secondsToMinutes(state.breakStartValue).toFixed(1)
+          ),
         });
-        this.countdown = state;
       });
     this.countdownSubscription$.unsubscribe();
   }
 
+  ngOnDestroy(): void {
+    this.countdownSubscription$.unsubscribe();
+  }
+
+  resetSettingsToInitial() {
+    this.countdownService.resetCountdownToInitialState();
+    const resubscribe$ = this.countdownService
+      .getCountdownState()
+      .subscribe((state) => {
+        this.formGroup.setValue({
+          startValue: Number(secondsToMinutes(state.startValue).toFixed(1)),
+          breakStartValue: Number(
+            secondsToMinutes(state.breakStartValue).toFixed(1)
+          ),
+        });
+      });
+    resubscribe$.unsubscribe();
+  }
+
   onSubmit() {
     if (
-      this.formGroup.value['startValue'] &&
-      this.formGroup.value['breakStartValue']
+      this.formGroup.value.startValue &&
+      this.formGroup.value.breakStartValue
     ) {
-      if (this.formGroup.controls.breakStartValue.dirty) {
-        this.countdownService.setCountdownBreakStartValue(
-          minutesToSeconds(this.formGroup.value['breakStartValue'])
-        );
-      }
-      if (this.formGroup.controls.startValue.dirty) {
-        this.countdownService.setCountdownStartValue(
-          minutesToSeconds(this.formGroup.value['startValue'])
-        );
-      }
+      this.countdownService.setCountdownStartValue(
+        minutesToSeconds(this.formGroup.value.startValue)
+      );
+      this.countdownService.setCountdownBreakStartValue(
+        minutesToSeconds(this.formGroup.value.breakStartValue)
+      );
     }
   }
 }

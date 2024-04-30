@@ -11,13 +11,6 @@ export const selectCountdownState = createSelector(
   }
 );
 
-// export const selectCountdownValue = createSelector(
-//   selectCountdown,
-//   (countdown) => {
-//     return countdown.value;
-//   }
-// );
-
 export const selectCountdownStartValue = createSelector(
   selectCountdown,
   (countdown) => {

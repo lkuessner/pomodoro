@@ -1,14 +1,25 @@
 @use "../../../assets/styles/colors" as colors;
 
-.logHeadline {
-  color: colors.$WHITE;
+.logsHeaderContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+  .logHeadline {
+    margin: 0;
+  }
+
+  .logHeadline,
+  .resetButton {
+    color: colors.$WHITE;
+  }
 }
 
 .logsContainer {
   height: 500px;
   border: 1px solid colors.$WHITE;
   border-radius: 6px;
-  padding: 0.5rem 1rem;
+  padding: 1rem 1rem;
   overflow-y: scroll;
   background: colors.$WHITE;
 

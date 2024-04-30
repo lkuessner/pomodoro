@@ -1,9 +1,9 @@
 import { Injectable, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { ITasksService, Task } from '../../interfaces/tasks';
-import { TaskActions } from '../../state/tasks/tasks.actions';
-import { AppState } from '../../interfaces/app/app.state';
-import { selectTasksState } from '../../state/tasks/tasks.selectors';
+import { ITasksService, Task, TasksState } from '../../interfaces/tasks';
+import { AppState } from '../../interfaces/app';
+import { TasksActions } from '../../state/tasks';
+import { selectTasksState } from '../../state/tasks';
 
 @Injectable({
   providedIn: 'root',
@@ -20,38 +20,42 @@ export class TasksService implements ITasksService {
   /* Actions */
 
   addTask(taskTitle: Task['title']) {
-    this.store.dispatch(TaskActions.addTask({ taskTitle }));
+    this.store.dispatch(TasksActions.addTask({ taskTitle }));
   }
 
   removeTask(taskId: Task['id']) {
-    this.store.dispatch(TaskActions.removeTask({ taskId }));
+    this.store.dispatch(TasksActions.removeTask({ taskId }));
   }
 
   addExmapleData() {
-    this.store.dispatch(TaskActions.addExmapleData());
+    this.store.dispatch(TasksActions.addExmapleData());
+  }
+
+  setIsAllTasksDone(isAllTasksDone: TasksState['isAllTasksDone']) {
+    this.store.dispatch(TasksActions.setIsAllTasksDone({ isAllTasksDone }));
   }
 
   setTaskTitle(taskId: Task['id'], taskTitle: Task['title']) {
-    this.store.dispatch(TaskActions.setTaskTitle({ taskId, taskTitle }));
+    this.store.dispatch(TasksActions.setTaskTitle({ taskId, taskTitle }));
   }
 
   setTaskIsDone(taskId: Task['id'], value: Task['isDone']) {
-    this.store.dispatch(TaskActions.setTaskIsDone({ taskId, value }));
+    this.store.dispatch(TasksActions.setTaskIsDone({ taskId, value }));
   }
 
   setTaskIsActive(taskId: Task['id'], value: Task['isActive']) {
-    this.store.dispatch(TaskActions.setTaskIsActive({ taskId, value }));
+    this.store.dispatch(TasksActions.setTaskIsActive({ taskId, value }));
   }
 
   resetAllTasksIsActive() {
-    this.store.dispatch(TaskActions.resetAllTasksIsActive());
+    this.store.dispatch(TasksActions.resetAllTasksIsActive());
   }
 
   resetAllTasksIsDone() {
-    this.store.dispatch(TaskActions.resetAllTasksIsDone());
+    this.store.dispatch(TasksActions.resetAllTasksIsDone());
   }
 
   clearAllTasks() {
-    this.store.dispatch(TaskActions.clearAllTasks());
+    this.store.dispatch(TasksActions.clearAllTasks());
   }
 }

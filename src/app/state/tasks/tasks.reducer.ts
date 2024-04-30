@@ -1,23 +1,24 @@
 import { createReducer, on } from '@ngrx/store';
 
-import { TaskActions } from './tasks.actions';
 import { buildTask, compareTasksIsDone } from '../../functions';
-import { TasksState } from '../../interfaces/tasks/tasks.model';
+import { TasksState } from '../../interfaces/tasks';
+import { TasksActions } from './tasks.actions';
 
 export const initialState: TasksState = {
+  isAllTasksDone: false,
   tasks: [],
 };
 
 export const tasksReducer = createReducer(
   initialState,
-  on(TaskActions.addTask, (state, { taskTitle }) => {
+  on(TasksActions.addTask, (state, { taskTitle }) => {
     const newTask = buildTask(taskTitle);
     return {
       ...state,
       tasks: [...state.tasks, newTask],
     };
   }),
-  on(TaskActions.addExmapleData, (state) => {
+  on(TasksActions.addExmapleData, (state) => {
     return {
       ...state,
       tasks: [
@@ -28,12 +29,18 @@ export const tasksReducer = createReducer(
       ],
     };
   }),
-  on(TaskActions.removeTask, (state, { taskId }) => {
+  on(TasksActions.removeTask, (state, { taskId }) => {
     const filteredTasks = state.tasks.filter((task) => task.id !== taskId);
     state = { ...state, tasks: filteredTasks };
     return state;
   }),
-  on(TaskActions.setTaskTitle, (state, { taskId, taskTitle }) => {
+  on(TasksActions.setIsAllTasksDone, (state, { isAllTasksDone }) => {
+    return {
+      ...state,
+      isAllTasksDone,
+    };
+  }),
+  on(TasksActions.setTaskTitle, (state, { taskId, taskTitle }) => {
     const taskIndex = state.tasks.findIndex((task) => task.id === taskId);
 
     if (taskIndex !== -1) {
@@ -48,7 +55,7 @@ export const tasksReducer = createReducer(
       throw new Error(`No task found with taskId ${taskId} to set title.`);
     }
   }),
-  on(TaskActions.setTaskIsDone, (state, { taskId, value }) => {
+  on(TasksActions.setTaskIsDone, (state, { taskId, value }) => {
     return {
       ...state,
       tasks: state.tasks
@@ -61,7 +68,7 @@ export const tasksReducer = createReducer(
         .sort(compareTasksIsDone),
     };
   }),
-  on(TaskActions.setTaskIsActive, (state, { taskId, value }) => {
+  on(TasksActions.setTaskIsActive, (state, { taskId, value }) => {
     return {
       ...state,
       tasks: state.tasks.map((task) => {
@@ -72,21 +79,21 @@ export const tasksReducer = createReducer(
       }),
     };
   }),
-  on(TaskActions.resetAllTasksIsActive, (state) => ({
+  on(TasksActions.resetAllTasksIsActive, (state) => ({
     ...state,
     tasks: state.tasks.map((task) => ({
       ...task,
       isActive: false,
     })),
   })),
-  on(TaskActions.resetAllTasksIsDone, (state) => ({
-    ...state,
+  on(TasksActions.resetAllTasksIsDone, (state) => ({
+    isAllTasksDone: false,
     tasks: state.tasks.map((task) => ({
       ...task,
       isDone: false,
     })),
   })),
-  on(TaskActions.clearAllTasks, (state) => ({
+  on(TasksActions.clearAllTasks, (state) => ({
     ...state,
     tasks: [],
   }))

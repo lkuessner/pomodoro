@@ -1,11 +1,9 @@
-import { Injectable, OnInit } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { Log, ILogsService } from '../../interfaces/logs';
+import { AppState } from '../../interfaces/app/app.state';
+import { ILogsService, Log } from '../../interfaces/logs';
 import { LogsActions } from '../../state/logs/logs.actions';
 import { selectLogsState } from '../../state/logs/logs.selectors';
-import { LogsState } from '../../interfaces/logs/logs.model';
-import { Observable } from 'rxjs';
-import { AppState } from '../../interfaces/app/app.state';
 
 @Injectable({
   providedIn: 'root',
@@ -25,6 +23,6 @@ export class LogsService implements ILogsService {
   }
 
   resetLogs() {
-    this.store.dispatch(LogsActions.resetLogState());
+    this.store.dispatch(LogsActions.resetLogs());
   }
 }

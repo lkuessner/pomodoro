@@ -18,7 +18,7 @@
           [routerLinkActiveOptions]="{ exact: true }"
           [ngClass]="{
             activeAnchor: rla.isActive,
-            attentionAnimation: countdown.expired && item.path === ''
+            countdownExpired: countdown.expired && item.path === '',
           }"
           routerLink="{{ item.path }}"
           ariaCurrentWhenActive="page"

@@ -1,7 +1,7 @@
 import { createReducer, on } from '@ngrx/store';
 
+import { LogsState } from '../../interfaces/logs';
 import { LogsActions } from './logs.actions';
-import { LogsState } from '../../interfaces/logs/logs.model';
 
 export const initialState: LogsState = {
   logs: [],
@@ -15,7 +15,7 @@ export const logsReducer = createReducer(
   on(LogsActions.removeLogByID, (state, action) => {
     return { logs: [...state.logs.filter((log) => log.id !== action.logId)] };
   }),
-  on(LogsActions.resetLogState, (_state, _action) => {
-    return initialState;
+  on(LogsActions.resetLogs, (_state, _action) => {
+    return { logs: [] };
   })
 );

@@ -1,8 +1,6 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Subscription, filter } from 'rxjs';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { CountdownService } from './services/CountdownService/countdown.service';
 import {
   NavigationEnd,
   Router,
@@ -11,9 +9,11 @@ import {
   RouterModule,
   RouterOutlet,
 } from '@angular/router';
-import { CountdownState } from './interfaces/countdown/countdown.model';
-import { TabNavigationComponent } from './components/tab-navigation/tab-navigation.component';
-import { TasksService } from './services';
+import { Subscription, filter } from 'rxjs';
+import { TabNavigationComponent } from './components/';
+import { CountdownState } from './interfaces/countdown';
+import { TasksState } from './interfaces/tasks';
+import { CountdownService, LogsService, TasksService } from './services';
 
 @Component({
   selector: 'app-root',
@@ -36,13 +36,15 @@ export class AppComponent implements OnDestroy, OnInit {
   countdownSubscription$: Subscription;
   routerSubscription$: Subscription;
   isLastRouteActive: boolean = false;
+  isWeckerRouteActive: boolean = false;
   fireAnimation: boolean = false;
-  allTasksDone: boolean = false;
-
+  tasks!: TasksState;
+  logs: any;
   constructor(
     private router: Router,
     private countdownService: CountdownService,
-    private tasksService: TasksService
+    private tasksService: TasksService,
+    private logsService: LogsService
   ) {
     this.countdownSubscription$ = this.countdownService
       .getCountdownState()
@@ -50,9 +52,11 @@ export class AppComponent implements OnDestroy, OnInit {
         this.countdown = state;
       });
     this.tasksService.getTasksState().subscribe((state) => {
-      this.allTasksDone =
-        state.tasks.length >= 1 &&
-        !state.tasks.map((task) => task.isDone).includes(false);
+      this.tasks = state;
+    });
+
+    this.logsService.getLogsState().subscribe((logs) => {
+      this.logs = logs.logs;
     });
 
     this.routerSubscription$ = this.router.events
@@ -61,10 +65,9 @@ export class AppComponent implements OnDestroy, OnInit {
         let lastRouteIndex =
           this.router.config.filter((route) => route.path !== '**').length - 1;
 
-        this.isLastRouteActive = this.router.isActive(
-          this.router.config[lastRouteIndex].path!,
-          true
-        );
+        this.isWeckerRouteActive = this.router.url === '/';
+        this.isLastRouteActive =
+          this.router.url === `/${this.router.config[lastRouteIndex].path}`;
       });
 
     const countdownValueIsStartOrBreakStartValue =
