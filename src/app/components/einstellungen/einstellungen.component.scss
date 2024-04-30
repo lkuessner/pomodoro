@@ -5,13 +5,20 @@
   width: 100%;
   flex-direction: column;
 
-  .tabHeadliner {
-    color: colors.$WHITE;
+  .settingsHeaderContainer {
+    display: flex;
+    justify-content: space-between;
+    .resetButton {
+      color: white;
+    }
+    .tabName {
+      color: colors.$WHITE;
+    }
   }
-
   .inputContainer {
     display: flex;
     justify-content: space-between;
+    margin-bottom: 1.25rem;
     .inputFullWidth {
       width: 45%;
     }

@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { MatIcon } from '@angular/material/icon';
 import { Route, Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { MatIcon } from '@angular/material/icon';
 import { CountdownState } from '../../interfaces/countdown';
 import { CountdownService } from '../../services';
 
@@ -17,6 +17,7 @@ export class TabNavigationComponent implements OnInit, OnDestroy {
   navigationItems: Array<Route> = [];
   countdown!: CountdownState;
   countdownSubscription$: Subscription;
+  isWeckerRouteActive: boolean = false;
   constructor(
     private router: Router,
     private countdownService: CountdownService
@@ -26,6 +27,8 @@ export class TabNavigationComponent implements OnInit, OnDestroy {
       .subscribe((state) => {
         this.countdown = state;
       });
+
+    this.isWeckerRouteActive = this.router.url === '/';
   }
 
   ngOnInit(): void {

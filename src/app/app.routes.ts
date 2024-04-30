@@ -1,8 +1,8 @@
 import { Routes } from '@angular/router';
 import { EinstellungenComponent } from './components/einstellungen/einstellungen.component';
+import { LogComponent } from './components/log/log.component';
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
 import { TimerComponent } from './components/timer/timer.component';
-import { LogComponent } from './components/log/log.component';
 
 export const routes: Routes = [
   {

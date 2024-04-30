@@ -1,22 +1,22 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect } from '@ngrx/effects';
 import { filter, tap } from 'rxjs/operators';
-import { LogsService } from '../../services/LogsService/logs.service';
-import { Log } from '../../interfaces/logs';
-import { LogsActions } from './logs.actions';
 import { v4 } from 'uuid';
-import { CountdownActions } from '../countdown/countdown.actions';
+import { Log } from '../../interfaces/logs';
+import { LogsService } from '../../services/LogsService';
+import { CountdownActions } from '../countdown';
+import { LogsActions } from './logs.actions';
 
 @Injectable()
 export class LogEffects {
   constructor(private actions$: Actions, private logsService: LogsService) {}
-  logActions$ = createEffect(
+  logActionsEffect$ = createEffect(
     () =>
       this.actions$.pipe(
         filter(
           (action) =>
             action.type !== LogsActions.addLog.type &&
-            action.type !== LogsActions.resetLogState.type &&
+            action.type !== LogsActions.resetLogs.type &&
             action.type !== LogsActions.removeLogByID.type &&
             action.type !== CountdownActions.decrementCountdown.type &&
             action.type !== CountdownActions.setCountdownExpired.type

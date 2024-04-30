@@ -1,23 +1,22 @@
-import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
+import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialog } from '@angular/material/dialog';
-import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
+import { MatDialog } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { RouterLink, RouterLinkActive, RouterModule } from '@angular/router';
 import { MatIconButtonSizesModule } from 'mat-icon-button-sizes';
 import { Subscription } from 'rxjs';
+import { format } from '../../functions';
+import { CountdownState } from '../../interfaces/countdown';
+import { TasksState } from '../../interfaces/tasks';
+import { TasksService } from '../../services';
+import { CountdownService } from '../../services/CountdownService';
 import { AddEditTaskDialogComponent } from './AddEditTaskDialog/addEditTaskDialog.component';
 import { ConfirmDialog } from './ConfirmDialog/confirmDialog.component';
-import { Task } from '../../interfaces/tasks';
-import { RouterLink, RouterLinkActive, RouterModule } from '@angular/router';
-import { CountdownService } from '../../services/CountdownService/countdown.service';
-import { TasksState } from '../../interfaces/tasks';
-import { CountdownState } from '../../interfaces/countdown';
-import { TasksService } from '../../services';
-import { format } from '../../functions';
 
 @Component({
   selector: 'app-timer',
@@ -39,13 +38,12 @@ import { format } from '../../functions';
   styleUrl: './timer.component.scss',
 })
 export class TimerComponent {
-  countdown!: CountdownState;
+  countdownState!: CountdownState;
   countdownSubscription$: Subscription;
-  tasks!: TasksState;
-  tasksArray!: TasksState['tasks'];
+  tasksState!: TasksState;
   tasksSubscription$: Subscription;
-  allTasksDone: boolean = false;
-  currentTask: Task | undefined;
+  isNoTaskDone: boolean = false;
+
   constructor(
     private countdownService: CountdownService,
     private tasksService: TasksService,
@@ -54,16 +52,15 @@ export class TimerComponent {
     this.countdownSubscription$ = this.countdownService
       .getCountdownState()
       .subscribe((state) => {
-        this.countdown = state;
+        this.countdownState = state;
       });
     this.tasksSubscription$ = this.tasksService
       .getTasksState()
       .subscribe((state) => {
-        this.tasks = state;
-        this.tasksArray = state.tasks;
-        this.allTasksDone = !state.tasks
-          .map((task) => task.isDone)
-          .includes(false);
+        this.tasksState = state;
+
+        this.isNoTaskDone =
+          state.tasks.filter((task) => task.isDone).length === 0;
       });
   }
 
@@ -83,10 +80,12 @@ export class TimerComponent {
     this.countdownService.resetCountdown();
     this.countdownService.setCountdownBreak(false);
     this.tasksService.resetAllTasksIsDone();
+    this.tasksService.resetAllTasksIsActive();
   }
 
   resetCurrentCountdown() {
     this.countdownService.resetCountdown();
+    this.tasksService.setTaskIsActive(this.tasksState.tasks[0].id, false);
   }
 
   addExampleTasks() {
@@ -95,10 +94,7 @@ export class TimerComponent {
 
   toggleTaskIsDone(taskId: string, taskIsDoneValue: boolean) {
     this.tasksService.setTaskIsDone(taskId, !taskIsDoneValue);
-  }
-
-  resetCurrentTimer() {
-    this.countdownService.resetCountdown();
+    this.tasksService.setTaskIsActive(taskId, false);
   }
 
   clearAllTasks() {
@@ -107,8 +103,8 @@ export class TimerComponent {
       height: '120px',
       width: '400px',
     });
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
+    dialogRef.afterClosed().subscribe((answer) => {
+      if (answer) {
         this.tasksService.clearAllTasks();
       }
     });

@@ -3,7 +3,7 @@
   class="views-container"
   [ngClass]="{
     isLastRouteBorder: isLastRouteActive,
-    attentionAnimation: countdown.expired
+    attentionAnimation: countdown.expired && isWeckerRouteActive
   }"
 >
   <div class="content-padding">

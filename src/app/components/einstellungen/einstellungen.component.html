@@ -1,5 +1,16 @@
 <form class="settings-form" [formGroup]="formGroup" (ngSubmit)="onSubmit()">
-  <h2 class="tabHeadliner">Einstellungen</h2>
+  <div class="settingsHeaderContainer">
+    <h2 class="tabName">Einstellungen</h2>
+    <button
+      mat-icon-button
+      mat-medium-icon-button
+      class="resetButton"
+      (click)="resetSettingsToInitial()"
+      title="Auf Starteinstellungen zurücksetzen"
+    >
+      <mat-icon>history</mat-icon>
+    </button>
+  </div>
   <div class="inputContainer">
     <mat-form-field class="inputFullWidth">
       <mat-label>Dauer pro Aufgabe (Minuten)</mat-label>
@@ -11,12 +22,14 @@
         [errorStateMatcher]="matcher"
         placeholder="25"
       />
-      @if (formGroup && !formGroup.controls['startValue'].hasError('required'))
-      {
+      @if (formGroup && formGroup.controls['startValue'].hasError('required')) {
       <mat-error>Bitte gib eine Aufgabendauer an.</mat-error>
-      } @if (formGroup.controls['startValue'].hasError('required')) {
+      } @if (formGroup.controls['startValue'].hasError('min')) {
+      <mat-error>Aufgabendauer muss mindestens 0,1 betragen.</mat-error>
+      } @if (formGroup.controls['startValue'].hasError('pattern')) {
       <mat-error
-        >Angabe einer Aufgabendauer ist <strong>notwendig</strong>.</mat-error
+        >Aufgabendauer darf maximal <b>eine</b> Nachkommastelle
+        haben.</mat-error
       >
       }
     </mat-form-field>
@@ -32,11 +45,13 @@
         placeholder="25"
       />
       @if (formGroup &&
-      !formGroup.controls['breakStartValue'].hasError('required')) {
+      formGroup.controls['breakStartValue'].hasError('required')) {
       <mat-error>Bitte gib eine Pausendauer an.</mat-error>
-      } @if (formGroup.controls['breakStartValue'].hasError('required')) {
+      } @if (formGroup.controls['breakStartValue'].hasError('min')) {
+      <mat-error>Pausendauer muss mindestens 0,1 betragen.</mat-error>
+      } @if (formGroup.controls['breakStartValue'].hasError('pattern')) {
       <mat-error
-        >Angabe einer Pausendauer ist <strong>notwendig</strong>.</mat-error
+        >Pausendauer darf maximal <b>eine</b> Nachkommastelle haben.</mat-error
       >
       }
     </mat-form-field>

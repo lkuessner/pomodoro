@@ -7,6 +7,6 @@ export const LogsActions = createActionGroup({
     'Get Logs state': emptyProps(),
     'Add Log': props<{ log: Log }>(),
     'Remove Log by ID': props<{ logId: Log['id'] }>(),
-    'Reset Log state': emptyProps(),
+    'Reset Logs': emptyProps(),
   },
 });

@@ -1,7 +1,7 @@
 import { createReducer, on } from '@ngrx/store';
 
-import { ConfigActions } from './config.actions';
 import { ConfigState } from '../../interfaces/config/config.model';
+import { ConfigActions } from './config.actions';
 
 export const initialState: ConfigState = {
   taskDuration: 1500,

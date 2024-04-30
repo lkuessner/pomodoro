@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 
-import { AppState } from '../../interfaces/app/app.state';
+import { AppState } from '../../interfaces/app';
 import { ICountdownService } from '../../interfaces/countdown';
-import { CountdownActions } from '../../state/countdown/countdown.actions';
-import { selectCountdownState } from '../../state/countdown/countdown.selectors';
+import { CountdownActions, selectCountdownState } from '../../state/countdown';
 
 @Injectable({
   providedIn: 'root',
@@ -44,12 +43,18 @@ export class CountdownService implements ICountdownService {
     this.store.dispatch(CountdownActions.resetCountdown());
   }
 
+  resetCountdownToInitialState() {
+    this.store.dispatch(CountdownActions.resetCountdownToInitialState());
+  }
+
   setCountdownBreak(isBreakActive: boolean) {
     this.store.dispatch(CountdownActions.setBreakIsActive({ isBreakActive }));
   }
 
   setCountdownStartValue(startValue: number) {
-    this.store.dispatch(CountdownActions.setStartValue({ startValue }));
+    this.store.dispatch(
+      CountdownActions.setCountdownStartValue({ startValue })
+    );
   }
 
   setCountdownValue(value: number) {

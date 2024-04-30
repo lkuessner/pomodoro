@@ -7,10 +7,13 @@ export const CountdownActions = createActionGroup({
     'Start Countdown': emptyProps(),
     'Stop Countdown': emptyProps(),
     'Reset Countdown': emptyProps(),
+    'Reset Countdown to Initial State': emptyProps(),
     'Decrement Countdown': emptyProps(),
     'Set Running': props<{ running: CountdownState['running'] }>(),
     'Set Countdown value': props<{ value: CountdownState['value'] }>(),
-    'Set start value': props<{ startValue: CountdownState['startValue'] }>(),
+    'Set Countdown start value': props<{
+      startValue: CountdownState['startValue'];
+    }>(),
     'Set break start value': props<{
       breakStartValue: CountdownState['breakStartValue'];
     }>(),

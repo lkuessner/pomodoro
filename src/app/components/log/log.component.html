@@ -1,10 +1,23 @@
-<h2 class="logHeadline">Ereignisse</h2>
+<div class="logsHeaderContainer">
+  <h2 class="logHeadline">Ereignisse</h2>
+  <button
+    mat-medium-icon-button
+    mat-icon-button
+    class="resetButton"
+    (click)="resetLogs()"
+    title="Alle Ereignisse löschen"
+  >
+    <mat-icon>delete_forever</mat-icon>
+  </button>
+</div>
 <div class="logsContainer">
-  @for (log of logs; track log){
+  @if(logs.length === 0){
+  <div>Keine Ereignisse verfügbar</div>
+  } @else { @for (log of logs; track log){
   <div class="log">
     <div>{{ log.date }}</div>
     <div>&nbsp;-&nbsp;</div>
     <div>{{ log.title }}</div>
   </div>
-  }
+  } }
 </div>

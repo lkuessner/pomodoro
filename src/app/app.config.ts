@@ -1,25 +1,24 @@
 import { ApplicationConfig, isDevMode } from '@angular/core';
 import { provideRouter } from '@angular/router';
 
-import { routes } from './app.routes';
-import { provideStore } from '@ngrx/store';
-import { provideEffects } from '@ngrx/effects';
-import { LogEffects } from './state/logs/logs.effects';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import { countdownReducer } from './state/countdown/countdown.reducer';
-import { tasksReducer } from './state/tasks/tasks.reducer';
-import { logsReducer } from './state/logs/logs.reducer';
-import { configReducer } from './state/config/config.reducer';
+import { provideEffects } from '@ngrx/effects';
+import { provideStore } from '@ngrx/store';
+import { provideStoreDevtools } from '@ngrx/store-devtools';
+import { routes } from './app.routes';
 import { metaReducers } from './state';
 import { CountdownEffects } from './state/countdown/countdown.effects';
-import { provideStoreDevtools } from '@ngrx/store-devtools';
+import { countdownReducer } from './state/countdown/countdown.reducer';
+import { LogEffects } from './state/logs/logs.effects';
+import { logsReducer } from './state/logs/logs.reducer';
+import { TasksEffects } from './state/tasks/tasks.effects';
+import { tasksReducer } from './state/tasks/tasks.reducer';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
     provideStore(
       {
-        config: configReducer,
         countdown: countdownReducer,
         logs: logsReducer,
         tasks: tasksReducer,
@@ -30,7 +29,7 @@ export const appConfig: ApplicationConfig = {
       connectInZone: true,
       logOnly: isDevMode(),
     }),
-    provideEffects(CountdownEffects, LogEffects),
+    provideEffects(CountdownEffects, LogEffects, TasksEffects),
     provideAnimationsAsync(),
   ],
 };
