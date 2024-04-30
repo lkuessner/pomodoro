@@ -3,18 +3,18 @@ import { CountdownActions } from './countdown.actions';
 import { CountdownState } from '../../interfaces/countdown';
 
 export const initialStateObject: CountdownState = {
-  value: 5,
-  startValue: 5,
-  breakStartValue: 5,
+  value: 1500,
+  startValue: 1500,
+  breakStartValue: 300,
   running: false,
   isBreakActive: false,
   expired: false,
 };
 
 export const initialState: CountdownState = {
-  value: 5,
-  startValue: 5,
-  breakStartValue: 5,
+  value: 1500,
+  startValue: 1500,
+  breakStartValue: 300,
   running: false,
   isBreakActive: false,
   expired: false,
